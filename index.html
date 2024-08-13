@@ -1,15 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <!-- Google tag (gtag.js) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-VZF9JMJHJQ"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-
-  gtag('config', 'G-VZF9JMJHJQ');
-</script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>OverFlip.Fun</title>
@@ -179,16 +170,36 @@
             box-shadow: 0 0 20px #e2761b;
         }
 
-        input {
-            padding: 10px;
-            font-size: 16px;
-            margin: 10px 0;
-            border: 1px solid #ccc;
-            border-radius: 5px;
+        input, .slider {
+            -webkit-appearance: none;
+            appearance: none;
             width: calc(100% - 22px);
             max-width: 300px;
-            background-color: #333;
-            color: #fff;
+            height: 15px;
+            background: #333;
+            outline: none;
+            opacity: 0.7;
+            transition: opacity .2s;
+            border-radius: 5px;
+            margin: 10px 0;
+        }
+
+        .slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 25px;
+            height: 25px;
+            background: #ffcc00;
+            cursor: pointer;
+            border-radius: 50%;
+        }
+
+        .slider::-moz-range-thumb {
+            width: 25px;
+            height: 25px;
+            background: #ffcc00;
+            cursor: pointer;
+            border-radius: 50%;
         }
 
         table {
@@ -279,7 +290,7 @@
         .loss {
             color: #dc3545;
             text-shadow: 0 0 10px #dc3545;
-            font-size: 1.5em;
+            font-size: 0.9em; /* Smaller font for Total Losses */
             margin-top: 10px;
         }
 
@@ -351,6 +362,24 @@
             0% { width: 0%; }
             100% { width: 100%; }
         }
+
+        .flip-label {
+            font-size: 2em;
+            font-weight: bold;
+            color: #ffcc00;
+            text-shadow: 0 0 10px #ffcc00;
+            display: none;
+        }
+
+        .flash {
+            animation: flash 1s infinite;
+        }
+
+        @keyframes flash {
+            0% { opacity: 1; }
+            50% { opacity: 0.5; }
+            100% { opacity: 1; }
+        }
     </style>
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.4.0/dist/confetti.browser.min.js"></script>
 </head>
@@ -376,9 +405,10 @@
         </div>
 
         <div class="section">
-            <input type="number" id="betAmount" placeholder="Enter amount of $OVER to bet (Max 10)">
+            <input type="range" min="1" max="10" value="1" class="slider" id="betAmount">
             <br>
-            <button id="maxBetButton">Max Bet</button>
+            <p id="flipLabel" class="flip-label"></p>
+            <br>
             <button id="flipButton" disabled>Flip Coin</button>
         </div>
 
@@ -694,7 +724,7 @@
 
             document.getElementById('totalWinsLosses').innerHTML = `
                 <div style="color: #28a745;">Total Wins: ${totalWins} OVER</div>
-                <div style="color: #dc3545;">Total Losses: ${totalLosses} OVER</div>
+                <div class="loss">Total Losses: ${totalLosses} OVER</div>
                 <br>
                 <div class="${netProfit >= 0 ? 'profit' : 'loss'}">Net Profit: ${netProfit} OVER</div>
             `;
@@ -734,9 +764,15 @@
             }
         }
 
-        document.getElementById('maxBetButton').addEventListener('click', () => {
-            document.getElementById('betAmount').value = 10;
+        document.getElementById('betAmount').addEventListener('input', function () {
+            const betValue = this.value;
+            document.getElementById('totalWinsLosses').style.display = 'none';
+            const flipLabel = document.getElementById('flipLabel');
+            flipLabel.innerText = `FLIP ${betValue} OVER`;
+            flipLabel.style.display = 'block';
+            flipLabel.classList.add('flash');
         });
+
     </script>
 </body>
 </html>

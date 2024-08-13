@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>OverFlip</title>
+    <title>Coin Flip DApp</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -20,10 +20,23 @@
             font-size: 16px;
             margin: 10px 0;
         }
+        table {
+            margin-top: 20px;
+            width: 100%;
+            border-collapse: collapse;
+        }
+        table, th, td {
+            border: 1px solid black;
+        }
+        th, td {
+            padding: 10px;
+            text-align: center;
+        }
     </style>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.4.0/dist/confetti.browser.min.js"></script>
 </head>
 <body>
-    <h1>OverFlip.lol</h1>
+    <h1>Coin Flip DApp</h1>
     
     <button id="connectButton">Connect to MetaMask</button>
     <p id="walletAddress"></p>
@@ -33,6 +46,20 @@
     <button id="flipButton" disabled>Flip Coin</button>
     
     <p id="status"></p>
+    
+    <h2>Betting History</h2>
+    <table id="historyTable" border="1">
+        <thead>
+            <tr>
+                <th>Bet Amount ($OVER)</th>
+                <th>Result</th>
+                <th>Won/Lost Amount ($OVER)</th>
+            </tr>
+        </thead>
+        <tbody>
+            <!-- Betting history will be dynamically inserted here -->
+        </tbody>
+    </table>
 
     <script src="https://cdn.jsdelivr.net/gh/ethereum/web3.js/dist/web3.min.js"></script>
     <script>
@@ -96,23 +123,53 @@
                 const win = receipt.events.FlipResult.returnValues.win;
                 const betAmountEther = web3.utils.fromWei(betAmount, "ether");
 
+                let resultText;
+                let wonLostAmount;
+
                 if (win) {
                     const wonAmount = betAmountEther * 2;
+                    resultText = "Won";
+                    wonLostAmount = wonAmount;
                     document.getElementById('status').innerText = `You won! Amount: ${wonAmount} $OVER`;
+
+                    // Trigger the confetti effect
+                    confetti({
+                        particleCount: 100,
+                        spread: 70,
+                        origin: { y: 0.6 }
+                    });
                 } else {
+                    resultText = "Lost";
+                    wonLostAmount = betAmountEther;
                     document.getElementById('status').innerText = `You lost! Amount: ${betAmountEther} $OVER`;
                 }
+
+                // Add the result to the history table
+                addBetToHistory(betAmountEther, resultText, wonLostAmount);
 
                 // Update balance after the transaction
                 const newBalance = await web3.eth.getBalance(userAccount);
                 const newBalanceInEther = web3.utils.fromWei(newBalance, "ether");
-                document.getElementById('userBalance').innerText = `Balance: ${newBalanceInEther} OVER`;
+                document.getElementById('userBalance').innerText = `Balance: ${newBalanceInEther} ETH`;
 
             } catch (error) {
                 console.error("Error occurred during transaction:", error);
                 document.getElementById('status').innerText = "Error occurred: " + error.message;
             }
         });
+
+        function addBetToHistory(betAmount, result, wonLostAmount) {
+            const tableBody = document.getElementById('historyTable').getElementsByTagName('tbody')[0];
+            const newRow = tableBody.insertRow();
+
+            const betCell = newRow.insertCell(0);
+            const resultCell = newRow.insertCell(1);
+            const amountCell = newRow.insertCell(2);
+
+            betCell.innerText = `${betAmount} $OVER`;
+            resultCell.innerText = result;
+            amountCell.innerText = `${wonLostAmount} $OVER`;
+        }
     </script>
 </body>
 </html>

@@ -71,26 +71,29 @@
             padding: 10px 20px;
             font-size: 16px;
             cursor: pointer;
-            background-color: #007bff;
-            color: #fff;
+            background-color: #0ff;
+            color: #0d0d0d;
             border: none;
             border-radius: 5px;
             margin: 10px;
-            transition: background-color 0.3s, transform 0.3s;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+            transition: background-color 0.3s, transform 0.3s, box-shadow 0.3s;
+            box-shadow: 0 0 10px #0ff;
         }
 
         button:hover {
-            background-color: #0056b3;
+            background-color: #ff00ff;
+            box-shadow: 0 0 20px #ff00ff;
             transform: scale(1.05);
         }
 
         #connectButton {
             background-color: #f6851b;
+            box-shadow: 0 0 10px #f6851b;
         }
 
         #connectButton:hover {
             background-color: #e2761b;
+            box-shadow: 0 0 20px #e2761b;
         }
 
         input {
@@ -121,8 +124,9 @@
         }
 
         th {
-            background-color: #007bff;
-            color: white;
+            background-color: #333;
+            color: #00ffcc;
+            text-shadow: 0 0 10px #00ffcc;
         }
 
         td a {
@@ -235,6 +239,7 @@
             border-radius: 5px;
             display: inline-block;
             margin-bottom: 10px;
+            box-shadow: 0 0 10px #555;
         }
 
         .collapse-content {
@@ -261,6 +266,7 @@
 
         <div class="section">
             <input type="number" id="betAmount" placeholder="Enter amount of $OVER to bet (Max 10)">
+            <br>
             <button id="maxBetButton">Max Bet</button>
             <button id="flipButton" disabled>Flip Coin</button>
         </div>

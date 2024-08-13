@@ -16,6 +16,7 @@
             overflow-y: auto; /* Allow vertical scrolling */
             overflow-x: hidden; /* Prevent horizontal scrolling */
             display: block; /* Ensure the content stacks vertically */
+            position: relative;
         }
 
         .container {
@@ -50,24 +51,15 @@
             text-shadow: 0 0 40px #ffcc00;
         }
 
-        .marquee {
+        .center-text {
             margin-top: 10px;
-            font-size: 1.5em;
-            color: #ffcc00;
-            text-shadow: 0 0 10px #ffcc00;
-            overflow: hidden;
-            white-space: nowrap;
-        }
-
-        .marquee span {
-            display: inline-block;
-            padding-left: 100%;
-            animation: marquee 10s linear infinite;
-        }
-
-        @keyframes marquee {
-            from { transform: translateX(100%); }
-            to { transform: translateX(-100%); }
+            font-size: 1.2em;
+            color: #ffffff;
+            text-shadow: 0 0 10px #ffffff;
+            max-width: 90%;
+            margin-left: auto;
+            margin-right: auto;
+            line-height: 1.5em;
         }
 
         .section {
@@ -80,8 +72,10 @@
             background-image: url('https://www.link-to-your-image.com/background.jpg'); /* Replace with your image link */
             background-size: cover;
             background-position: center;
+            background-blend-mode: overlay;
             border-radius: 15px;
             box-shadow: 0 0 30px #00ffcc;
+            background-color: rgba(0, 0, 0, 0.5); /* Adds a dark overlay to make text more readable */
         }
 
         .jackpot-title {
@@ -102,6 +96,46 @@
             font-size: 1.2em;
             color: #ffcc00;
             margin-top: 10px;
+        }
+
+        .tooltip {
+            position: relative;
+            display: inline-block;
+            cursor: pointer;
+            color: #ff00ff;
+        }
+
+        .tooltip .tooltiptext {
+            visibility: hidden;
+            width: 200px;
+            background-color: #333;
+            color: #fff;
+            text-align: center;
+            border-radius: 5px;
+            padding: 5px;
+            position: absolute;
+            z-index: 1;
+            bottom: 125%; /* Position above the tooltip */
+            left: 50%;
+            margin-left: -100px;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .tooltip .tooltiptext::after {
+            content: "";
+            position: absolute;
+            top: 100%;
+            left: 50%;
+            margin-left: -5px;
+            border-width: 5px;
+            border-style: solid;
+            border-color: #333 transparent transparent transparent;
+        }
+
+        .tooltip:hover .tooltiptext {
+            visibility: visible;
+            opacity: 1;
         }
 
         button {
@@ -242,16 +276,24 @@
             font-weight: bold;
             color: #ffcc00;
             margin-top: 30px;
+            transition: transform 0.5s ease-in-out;
         }
 
         .win {
             color: #28a745;
             text-shadow: 0 0 20px #28a745;
+            animation: popout 1s ease-in-out;
         }
 
         .lose {
             color: #dc3545;
             text-shadow: 0 0 20px #dc3545;
+        }
+
+        @keyframes popout {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.3); }
+            100% { transform: scale(1); }
         }
 
         #userBalance {
@@ -282,15 +324,16 @@
         }
 
         .floating-emoji {
-            position: absolute;
+            position: fixed;
             font-size: 2.5em;
             pointer-events: none;
-            animation: floatEmoji 5s ease-in-out infinite;
+            animation: bounce 5s ease-in-out infinite;
+            z-index: -1;
         }
 
-        @keyframes floatEmoji {
-            0% { transform: translateY(0) translateX(0) rotate(0deg); opacity: 1; }
-            100% { transform: translateY(-100px) translateX(50px) rotate(360deg); opacity: 0; }
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-30px); }
         }
 
         .animated-bg {
@@ -301,7 +344,7 @@
             height: 100%;
             background: radial-gradient(circle, rgba(63,94,251,1) 0%, rgba(252,70,107,1) 100%);
             animation: bgAnimation 20s linear infinite alternate;
-            z-index: -1;
+            z-index: -2;
             opacity: 0.3;
         }
 
@@ -347,12 +390,13 @@
             height: 15px;
             background-color: #0ff;
             border-radius: 10px;
-            animation: progress 2s linear infinite;
+            animation: excitingProgress 2s ease infinite;
         }
 
-        @keyframes progress {
-            0% { width: 0%; }
-            100% { width: 100%; }
+        @keyframes excitingProgress {
+            0% { width: 0%; background-color: #0ff; }
+            50% { width: 75%; background-color: #ff00ff; }
+            100% { width: 100%; background-color: #0ff; }
         }
 
         .flip-label {
@@ -377,15 +421,24 @@
 </head>
 <body>
     <div class="animated-bg"></div>
+    <div class="floating-emoji" style="top: 10%; left: 5%;">🎉</div>
+    <div class="floating-emoji" style="top: 20%; right: 10%;">💰</div>
+    <div class="floating-emoji" style="bottom: 15%; left: 15%;">✨</div>
+    <div class="floating-emoji" style="bottom: 10%; right: 5%;">🔥</div>
+
     <div class="container">
         <div class="jackpot-container">
             <div class="jackpot-title">Current Jackpot</div>
             <div id="jackpotAmount" class="jackpot-amount">Loading...</div>
-            <div class="jackpot-info">1% Chance on each flip to win the Jackpot! <span class="tooltip">ℹ<span class="tooltiptext">When you win the jackpot, 50% of the jackpot balance is sent to you instantly.</span></span></div>
+            <div class="jackpot-info">
+                <span class="tooltip">ℹ
+                    <span class="tooltiptext">When you win the jackpot, 50% of the jackpot balance is sent to you instantly.</span>
+                </span>
+            </div>
         </div>
 
         <h1 id="logo">OVERFLIP</h1>
-        <div class="marquee"><span>Provably fair game, built on Over Protocol FLIP & WIN 50% to Double Up, 50% chance to Lose your Flip</span></div>
+        <div class="center-text">Provably fair game, built on Over Protocol<br>FLIP & WIN - 50% to Double Up, 50% chance to Lose your Flip</div>
         
         <div class="section">
             <button id="connectButton">Connect to 🦊 MetaMask</button>
@@ -491,6 +544,7 @@
                     userAccount = accounts[0];
                     document.getElementById('walletAddress').innerText = `Connected: ${userAccount}`;
                     document.getElementById('flipButton').disabled = false;
+                    document.getElementById('connectButton').innerText = "Disconnect";
 
                     // Fetch and display the user's balance
                     const balance = await web3.eth.getBalance(userAccount);
@@ -524,6 +578,15 @@
         }
 
         document.getElementById('connectButton').addEventListener('click', async () => {
+            if (document.getElementById('connectButton').innerText === "Disconnect") {
+                // Disconnect logic here
+                document.getElementById('walletAddress').innerText = "";
+                document.getElementById('userBalance').innerText = "";
+                document.getElementById('connectButton').innerText = "Connect to 🦊 MetaMask";
+                document.getElementById('flipButton').disabled = true;
+                return;
+            }
+            
             web3 = new Web3(Web3.givenProvider || "http://localhost:8545");
 
             try {
@@ -600,7 +663,7 @@
 
                     // Trigger the confetti effect
                     confetti({
-                        particleCount: 100,
+                        particleCount: 200,
                         spread: 70,
                         origin: { y: 0.6 }
                     });

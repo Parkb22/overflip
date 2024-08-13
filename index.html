@@ -441,339 +441,347 @@
             </div>
         </div>
     </div>
+<script src="https://cdn.jsdelivr.net/gh/ethereum/web3.js/dist/web3.min.js"></script>
+<script>
+    const contractAddress = "0x6eA8c7fA80734C806734eFaDCe2664871A2127EC"; // Replace with your contract address
+    const jackpotContractAddress = "0xcbee6aF6ab310025888D340ab3Fd3F7fe808E000"; // Replace with your jackpot contract address
+    let contractABI;
+    let web3;
+    let contract;
+    let userAccount;
+    let betHistory = JSON.parse(localStorage.getItem('betHistory')) || [];
 
-    <script src="https://cdn.jsdelivr.net/gh/ethereum/web3.js/dist/web3.min.js"></script>
-    <script>
-        const contractAddress = "0x6eA8c7fA80734C806734eFaDCe2664871A2127EC"; // Replace with your contract address
-        const jackpotContractAddress = "0xcbee6aF6ab310025888D340ab3Fd3F7fe808E000"; // Replace with your jackpot contract address
-        let contractABI;
-        let web3;
-        let contract;
-        let userAccount;
-        let betHistory = JSON.parse(localStorage.getItem('betHistory')) || [];
+    const OVER_DOLPHIN_NETWORK_PARAMS = {
+        chainId: '0x84554c', // Chain ID 541764 in hexadecimal
+        chainName: 'Over Dolphin',
+        rpcUrls: ['https://wallet-dolphin.rpc.over.network/'],
+        nativeCurrency: {
+            name: 'OVER',
+            symbol: 'OVER',
+            decimals: 18
+        },
+        blockExplorerUrls: ['']
+    };
 
-        const OVER_DOLPHIN_NETWORK_PARAMS = {
-            chainId: '0x84554c', // Chain ID 541764 in hexadecimal
-            chainName: 'Over Dolphin',
-            rpcUrls: ['https://wallet-dolphin.rpc.over.network/'],
-            nativeCurrency: {
-                name: 'OVER',
-                symbol: 'OVER',
-                decimals: 18
-            },
-            blockExplorerUrls: ['']
-        };
-
-        async function switchToOverDolphinNetwork() {
-            try {
-                await ethereum.request({
-                    method: 'wallet_switchEthereumChain',
-                    params: [{ chainId: OVER_DOLPHIN_NETWORK_PARAMS.chainId }]
-                });
-            } catch (switchError) {
-                if (switchError.code === 4902) {
-                    try {
-                        await ethereum.request({
-                            method: 'wallet_addEthereumChain',
-                            params: [OVER_DOLPHIN_NETWORK_PARAMS]
-                        });
-                    } catch (addError) {
-                        console.error('Failed to add Over Dolphin network:', addError);
-                    }
-                } else {
-                    console.error('Failed to switch to Over Dolphin network:', switchError);
-                }
-            }
-        }
-
-        async function checkNetworkAndConnect() {
-            if (typeof window.ethereum !== 'undefined') {
+    async function switchToOverDolphinNetwork() {
+        try {
+            await ethereum.request({
+                method: 'wallet_switchEthereumChain',
+                params: [{ chainId: OVER_DOLPHIN_NETWORK_PARAMS.chainId }]
+            });
+        } catch (switchError) {
+            if (switchError.code === 4902) {
                 try {
-                    const networkId = await web3.eth.getChainId();
-                    if (networkId !== 541764) { // 541764 is the Over Dolphin network ID
-                        await switchToOverDolphinNetwork();
-                    }
-
-                    const accounts = await ethereum.request({ method: 'eth_requestAccounts' });
-                    userAccount = accounts[0];
-                    document.getElementById('walletAddress').innerText = `Connected: ${userAccount}`;
-                    document.getElementById('flipButton').disabled = false;
-
-                    // Fetch and display the user's balance
-                    const balance = await web3.eth.getBalance(userAccount);
-                    const balanceInEther = parseFloat(web3.utils.fromWei(balance, "ether")).toFixed(4);
-                    document.getElementById('userBalance').innerText = `Balance: ${balanceInEther} OVER`;
-
-                    // Restore the betting history
-                    restoreBetHistory();
-
-                    // Fetch and display the jackpot balance
-                    await updateJackpotBalance();
-
-                } catch (error) {
-                    console.error("User rejected the request or failed to switch network:", error);
-                    alert("Failed to connect to the Over Dolphin network.");
+                    await ethereum.request({
+                        method: 'wallet_addEthereumChain',
+                        params: [OVER_DOLPHIN_NETWORK_PARAMS]
+                    });
+                } catch (addError) {
+                    console.error('Failed to add Over Dolphin network:', addError);
                 }
             } else {
-                alert("MetaMask is not installed. Please install it to use this DApp!");
+                console.error('Failed to switch to Over Dolphin network:', switchError);
             }
         }
+    }
 
-        async function updateJackpotBalance() {
+    async function checkNetworkAndConnect() {
+        if (typeof window.ethereum !== 'undefined') {
             try {
-                const jackpotBalance = await web3.eth.getBalance(jackpotContractAddress);
-                const jackpotInEther = parseFloat(web3.utils.fromWei(jackpotBalance, "ether")).toFixed(4);
-                document.getElementById('jackpotAmount').innerText = `${jackpotInEther} OVER`;
-            } catch (error) {
-                console.error("Failed to fetch jackpot balance:", error);
-                document.getElementById('jackpotAmount').innerText = "Error loading jackpot";
-            }
-        }
-
-        document.getElementById('connectButton').addEventListener('click', async () => {
-            web3 = new Web3(Web3.givenProvider || "http://localhost:8545");
-
-            try {
-                const response = await fetch('coinflip.json');
-                contractABI = await response.json();
-                contract = new web3.eth.Contract(contractABI, contractAddress);
-
-                // Check if user is on the Over Dolphin network
-                await checkNetworkAndConnect();
-            } catch (error) {
-                console.error("Error loading the ABI or initializing the contract:", error);
-                document.getElementById('status').innerText = "Failed to load contract.";
-            }
-        });
-
-        document.getElementById('flipButton').addEventListener('click', async () => {
-            if (!contract) {
-                console.error("Contract is not initialized.");
-                document.getElementById('status').innerText = "Contract not initialized.";
-                return;
-            }
-
-            const betAmountInput = document.getElementById('betAmount').value;
-            if (betAmountInput > 10) {
-                alert("The maximum bet amount is 10 $OVER.");
-                return;
-            }
-            const betAmount = web3.utils.toWei(betAmountInput, "ether");
-
-            // Hide betting area and show progress bar
-            document.getElementById('bettingArea').classList.add('hidden');
-            document.getElementById('progressBarContainer').style.display = 'block';
-
-            document.getElementById('status').innerText = "Flipping the coin...";
-
-            try {
-                const receipt = await contract.methods.flip().send({
-                    from: userAccount,
-                    value: betAmount,
-                });
-
-                // Coin flip animation
-                const coinElement = document.getElementById('coin');
-                coinElement.classList.add('flip');
-
-                setTimeout(() => {
-                    coinElement.classList.remove('flip');
-                }, 1000);
-
-                const flipEvent = receipt.events.FlipResult;
-                if (!flipEvent || !flipEvent.returnValues) {
-                    throw new Error("Unexpected result from the contract.");
+                const networkId = await web3.eth.getChainId();
+                if (networkId !== 541764) { // 541764 is the Over Dolphin network ID
+                    await switchToOverDolphinNetwork();
                 }
 
-                const win = flipEvent.returnValues.win;
-                const betAmountEther = parseFloat(web3.utils.fromWei(betAmount, "ether")).toFixed(4);
+                const accounts = await ethereum.request({ method: 'eth_requestAccounts' });
+                userAccount = accounts[0];
+                document.getElementById('walletAddress').innerText = `Connected: ${userAccount}`;
+                document.getElementById('flipButton').disabled = false;
 
-                let resultText;
-                let wonLostAmount;
+                // Fetch and display the user's balance
+                const balance = await web3.eth.getBalance(userAccount);
+                const balanceInEther = parseFloat(web3.utils.fromWei(balance, "ether")).toFixed(4);
+                document.getElementById('userBalance').innerText = `Balance: ${balanceInEther} OVER`;
 
-                if (win) {
-                    const wonAmount = parseFloat(betAmountEther * 1.9).toFixed(4);
-                    resultText = "Won";
-                    wonLostAmount = wonAmount;
-                    document.getElementById('status').innerText = `You won! Amount: ${wonAmount} $OVER`;
-                    document.getElementById('status').classList.add('win');
+                // Restore the betting history
+                restoreBetHistory();
 
-                    // Trigger the confetti effect
-                    confetti({
-                        particleCount: 100,
-                        spread: 70,
-                        origin: { y: 0.6 }
-                    });
-
-                    // Flash green background
-                    flashBackground('green');
-
-                } else {
-                    resultText = "Lost";
-                    wonLostAmount = betAmountEther;
-                    document.getElementById('status').innerText = `You lost! Amount: ${betAmountEther} $OVER`;
-                    document.getElementById('status').classList.add('lose');
-                    triggerSadFaceEmojis();
-
-                    // Flash red background
-                    flashBackground('red');
-                }
-
-                // Add the result to the history table and save to localStorage
-                addBetToHistory(receipt.blockNumber, betAmountEther, resultText, wonLostAmount, receipt.transactionHash);
-
-                // Update balance and total wins/losses after the transaction
-                const newBalance = await web3.eth.getBalance(userAccount);
-                const newBalanceInEther = parseFloat(web3.utils.fromWei(newBalance, "ether")).toFixed(4);
-                document.getElementById('userBalance').innerText = `Balance: ${newBalanceInEther} OVER`;
-
-                updateTotalWinsLosses();
-
-                // Check if the jackpot was won
-                if (flipEvent.returnValues.jackpotWon) {
-                    setTimeout(() => {
-                        alert(`Congratulations! You've won the jackpot of ${flipEvent.returnValues.jackpotAmount} $OVER!`);
-                        // Double the confetti effect for a longer period
-                        for (let i = 0; i < 2; i++) {
-                            setTimeout(() => {
-                                confetti({
-                                    particleCount: 200,
-                                    spread: 100,
-                                    origin: { y: 0.6 }
-                                });
-                            }, i * 1000);
-                        }
-                    }, 500); // Delayed for effect
-                }
-
-                // Update jackpot balance after potential win
+                // Fetch and display the jackpot balance
                 await updateJackpotBalance();
 
-                // Show the betting area again after 3 seconds
-                setTimeout(() => {
-                    document.getElementById('bettingArea').classList.remove('hidden');
-                    document.getElementById('status').innerText = '';
-                }, 3000);
-
             } catch (error) {
-                console.error("Error occurred during transaction:", error);
-                document.getElementById('status').innerText = "Error occurred: " + error.message;
+                console.error("User rejected the request or failed to switch network:", error);
+                alert("Failed to connect to the Over Dolphin network.");
+            }
+        } else {
+            alert("MetaMask is not installed. Please install it to use this DApp!");
+        }
+    }
+
+    async function updateJackpotBalance() {
+        try {
+            const jackpotBalance = await web3.eth.getBalance(jackpotContractAddress);
+            const jackpotInEther = parseFloat(web3.utils.fromWei(jackpotBalance, "ether")).toFixed(4);
+            document.getElementById('jackpotAmount').innerText = `${jackpotInEther} OVER`;
+        } catch (error) {
+            console.error("Failed to fetch jackpot balance:", error);
+            document.getElementById('jackpotAmount').innerText = "Error loading jackpot";
+        }
+    }
+
+    document.getElementById('connectButton').addEventListener('click', async () => {
+        web3 = new Web3(Web3.givenProvider || "http://localhost:8545");
+
+        try {
+            const response = await fetch('coinflip.json');
+            contractABI = await response.json();
+            contract = new web3.eth.Contract(contractABI, contractAddress);
+
+            // Check if user is on the Over Dolphin network
+            await checkNetworkAndConnect();
+        } catch (error) {
+            console.error("Error loading the ABI or initializing the contract:", error);
+            document.getElementById('status').innerText = "Failed to load contract.";
+        }
+    });
+
+    document.getElementById('flipButton').addEventListener('click', async () => {
+        if (!contract) {
+            console.error("Contract is not initialized.");
+            document.getElementById('status').innerText = "Contract not initialized.";
+            return;
+        }
+
+        const betAmountInput = document.getElementById('betAmount').value;
+        if (betAmountInput > 10) {
+            alert("The maximum bet amount is 10 $OVER.");
+            return;
+        }
+        const betAmount = web3.utils.toWei(betAmountInput, "ether");
+
+        // Hide betting area and show progress bar
+        document.getElementById('bettingArea').classList.add('hidden');
+        document.getElementById('progressBarContainer').style.display = 'block';
+
+        document.getElementById('status').innerText = "Flipping the coin...";
+
+        try {
+            // Estimating gas
+            const gasEstimate = await contract.methods.flip().estimateGas({
+                from: userAccount,
+                value: betAmount
+            });
+
+            // Sending the transaction
+            const receipt = await contract.methods.flip().send({
+                from: userAccount,
+                value: betAmount,
+                gas: gasEstimate
+            });
+
+            // Coin flip animation
+            const coinElement = document.getElementById('coin');
+            coinElement.classList.add('flip');
+
+            setTimeout(() => {
+                coinElement.classList.remove('flip');
+            }, 1000);
+
+            const flipEvent = receipt.events.FlipResult;
+            if (!flipEvent || !flipEvent.returnValues) {
+                throw new Error("Unexpected result from the contract.");
+            }
+
+            const win = flipEvent.returnValues.win;
+            const betAmountEther = parseFloat(web3.utils.fromWei(betAmount, "ether")).toFixed(4);
+
+            let resultText;
+            let wonLostAmount;
+
+            if (win) {
+                const wonAmount = parseFloat(betAmountEther * 1.9).toFixed(4);
+                resultText = "Won";
+                wonLostAmount = wonAmount;
+                document.getElementById('status').innerText = `You won! Amount: ${wonAmount} $OVER`;
+                document.getElementById('status').classList.add('win');
+
+                // Trigger the confetti effect
+                confetti({
+                    particleCount: 100,
+                    spread: 70,
+                    origin: { y: 0.6 }
+                });
+
+                // Flash green background
+                flashBackground('green');
+
+            } else {
+                resultText = "Lost";
+                wonLostAmount = betAmountEther;
+                document.getElementById('status').innerText = `You lost! Amount: ${betAmountEther} $OVER`;
                 document.getElementById('status').classList.add('lose');
-            } finally {
-                document.getElementById('progressBarContainer').style.display = 'none';
+                triggerSadFaceEmojis();
+
+                // Flash red background
+                flashBackground('red');
+            }
+
+            // Add the result to the history table and save to localStorage
+            addBetToHistory(receipt.blockNumber, betAmountEther, resultText, wonLostAmount, receipt.transactionHash);
+
+            // Update balance and total wins/losses after the transaction
+            const newBalance = await web3.eth.getBalance(userAccount);
+            const newBalanceInEther = parseFloat(web3.utils.fromWei(newBalance, "ether")).toFixed(4);
+            document.getElementById('userBalance').innerText = `Balance: ${newBalanceInEther} OVER`;
+
+            updateTotalWinsLosses();
+
+            // Check if the jackpot was won
+            if (flipEvent.returnValues.jackpotWon) {
+                setTimeout(() => {
+                    alert(`Congratulations! You've won the jackpot of ${flipEvent.returnValues.jackpotAmount} $OVER!`);
+                    // Double the confetti effect for a longer period
+                    for (let i = 0; i < 2; i++) {
+                        setTimeout(() => {
+                            confetti({
+                                particleCount: 200,
+                                spread: 100,
+                                origin: { y: 0.6 }
+                            });
+                        }, i * 1000);
+                    }
+                }, 500); // Delayed for effect
+            }
+
+            // Update jackpot balance after potential win
+            await updateJackpotBalance();
+
+            // Show the betting area again after 3 seconds
+            setTimeout(() => {
+                document.getElementById('bettingArea').classList.remove('hidden');
+                document.getElementById('status').innerText = '';
+            }, 3000);
+
+        } catch (error) {
+            console.error("Error occurred during transaction:", error);
+            document.getElementById('status').innerText = "Error occurred: " + error.message;
+            document.getElementById('status').classList.add('lose');
+        } finally {
+            document.getElementById('progressBarContainer').style.display = 'none';
+        }
+    });
+
+    function flashBackground(color) {
+        document.body.style.transition = 'background-color 0.5s ease';
+        document.body.style.backgroundColor = color;
+        setTimeout(() => {
+            document.body.style.transition = 'background-color 1s ease';
+            document.body.style.backgroundColor = ''; // Reset to original gradient
+        }, 1000);
+    }
+
+    function addBetToHistory(blockNumber, betAmount, result, wonLostAmount, transactionHash) {
+        betHistory.unshift({ blockNumber, betAmount, result, wonLostAmount, transactionHash });
+        localStorage.setItem('betHistory', JSON.stringify(betHistory));
+        updateBetHistoryTable();
+    }
+
+    function updateBetHistoryTable() {
+        const tableBody = document.getElementById('historyTable').getElementsByTagName('tbody')[0];
+        tableBody.innerHTML = "";
+        betHistory.forEach((bet) => {
+            const newRow = tableBody.insertRow();
+
+            const blockCell = newRow.insertCell(0);
+            const betCell = newRow.insertCell(1);
+            const resultCell = newRow.insertCell(2);
+            const amountCell = newRow.insertCell(3);
+
+            blockCell.innerHTML = `<a href="https://dolphin.view.over.network/tx/${bet.transactionHash}" target="_blank">${bet.blockNumber}</a>`;
+            betCell.innerText = `${bet.betAmount} $OVER`;
+            resultCell.innerText = bet.result;
+            amountCell.innerText = `${bet.wonLostAmount} $OVER`;
+            if (bet.result === "Won") {
+                amountCell.classList.add('win-amount');
+            } else {
+                amountCell.classList.add('lose-amount');
+            }
+        });
+    }
+
+    function restoreBetHistory() {
+        updateBetHistoryTable();
+        updateTotalWinsLosses();
+    }
+
+    function updateTotalWinsLosses() {
+        let totalWins = 0;
+        let totalLosses = 0;
+
+        betHistory.forEach(bet => {
+            if (bet.result === "Won") {
+                totalWins += parseFloat(bet.wonLostAmount);
+            } else {
+                totalLosses += parseFloat(bet.betAmount);
             }
         });
 
-        function flashBackground(color) {
-            document.body.style.transition = 'background-color 0.5s ease';
-            document.body.style.backgroundColor = color;
+        totalWins = totalWins.toFixed(4);
+        totalLosses = totalLosses.toFixed(4);
+        const netProfit = (totalWins - totalLosses).toFixed(4);
+
+        document.getElementById('totalWinsLosses').innerHTML = `
+            <div style="color: #28a745;">Total Wins: ${totalWins} OVER</div>
+            <div class="loss">Total Losses: ${totalLosses} OVER</div>
+            <br>
+            <div class="${netProfit >= 0 ? 'profit' : 'loss'}">Net Profit: ${netProfit} OVER</div>
+        `;
+    }
+
+    function triggerSadFaceEmojis() {
+        for (let i = 0; i < 10; i++) {
+            const emoji = document.createElement('div');
+            emoji.className = 'floating-emoji';
+            emoji.innerText = '😢';
+            emoji.style.top = `${Math.random() * 100}%`;
+            emoji.style.left = `${Math.random() * 100}%`;
+            emoji.style.animationDuration = `${Math.random() * 2 + 3}s`;
+            document.querySelector('.container').appendChild(emoji);
+
             setTimeout(() => {
-                document.body.style.transition = 'background-color 1s ease';
-                document.body.style.backgroundColor = ''; // Reset to original gradient
-            }, 1000);
+                emoji.remove();
+            }, 5000);
         }
+    }
 
-        function addBetToHistory(blockNumber, betAmount, result, wonLostAmount, transactionHash) {
-            betHistory.unshift({ blockNumber, betAmount, result, wonLostAmount, transactionHash });
-            localStorage.setItem('betHistory', JSON.stringify(betHistory));
-            updateBetHistoryTable();
+    function toggleHistory() {
+        const content = document.getElementById("historyContent");
+        if (content.style.display === "block") {
+            content.style.display = "none";
+        } else {
+            content.style.display = "block";
         }
+    }
 
-        function updateBetHistoryTable() {
-            const tableBody = document.getElementById('historyTable').getElementsByTagName('tbody')[0];
-            tableBody.innerHTML = "";
-            betHistory.forEach((bet) => {
-                const newRow = tableBody.insertRow();
-
-                const blockCell = newRow.insertCell(0);
-                const betCell = newRow.insertCell(1);
-                const resultCell = newRow.insertCell(2);
-                const amountCell = newRow.insertCell(3);
-
-                blockCell.innerHTML = `<a href="https://dolphin.view.over.network/tx/${bet.transactionHash}" target="_blank">${bet.blockNumber}</a>`;
-                betCell.innerText = `${bet.betAmount} $OVER`;
-                resultCell.innerText = bet.result;
-                amountCell.innerText = `${bet.wonLostAmount} $OVER`;
-                if (bet.result === "Won") {
-                    amountCell.classList.add('win-amount');
-                } else {
-                    amountCell.classList.add('lose-amount');
-                }
-            });
-        }
-
-        function restoreBetHistory() {
+    function clearHistory() {
+        if (confirm("Are you sure you want to clear your betting history?")) {
+            betHistory = [];
+            localStorage.removeItem('betHistory');
             updateBetHistoryTable();
             updateTotalWinsLosses();
         }
+    }
 
-        function updateTotalWinsLosses() {
-            let totalWins = 0;
-            let totalLosses = 0;
+    document.getElementById('betAmount').addEventListener('input', function () {
+        const betValue = this.value;
+        document.getElementById('totalWinsLosses').style.display = 'none';
+        const flipLabel = document.getElementById('flipLabel');
+        flipLabel.innerText = `FLIP ${betValue} OVER`;
+        flipLabel.style.display = 'block';
+        flipLabel.classList.add('flash');
+    });
 
-            betHistory.forEach(bet => {
-                if (bet.result === "Won") {
-                    totalWins += parseFloat(bet.wonLostAmount);
-                } else {
-                    totalLosses += parseFloat(bet.betAmount);
-                }
-            });
+</script>
 
-            totalWins = totalWins.toFixed(4);
-            totalLosses = totalLosses.toFixed(4);
-            const netProfit = (totalWins - totalLosses).toFixed(4);
-
-            document.getElementById('totalWinsLosses').innerHTML = `
-                <div style="color: #28a745;">Total Wins: ${totalWins} OVER</div>
-                <div class="loss">Total Losses: ${totalLosses} OVER</div>
-                <br>
-                <div class="${netProfit >= 0 ? 'profit' : 'loss'}">Net Profit: ${netProfit} OVER</div>
-            `;
-        }
-
-        function triggerSadFaceEmojis() {
-            for (let i = 0; i < 10; i++) {
-                const emoji = document.createElement('div');
-                emoji.className = 'floating-emoji';
-                emoji.innerText = '😢';
-                emoji.style.top = `${Math.random() * 100}%`;
-                emoji.style.left = `${Math.random() * 100}%`;
-                emoji.style.animationDuration = `${Math.random() * 2 + 3}s`;
-                document.querySelector('.container').appendChild(emoji);
-
-                setTimeout(() => {
-                    emoji.remove();
-                }, 5000);
-            }
-        }
-
-        function toggleHistory() {
-            const content = document.getElementById("historyContent");
-            if (content.style.display === "block") {
-                content.style.display = "none";
-            } else {
-                content.style.display = "block";
-            }
-        }
-
-        function clearHistory() {
-            if (confirm("Are you sure you want to clear your betting history?")) {
-                betHistory = [];
-                localStorage.removeItem('betHistory');
-                updateBetHistoryTable();
-                updateTotalWinsLosses();
-            }
-        }
-
-        document.getElementById('betAmount').addEventListener('input', function () {
-            const betValue = this.value;
-            document.getElementById('totalWinsLosses').style.display = 'none';
-            const flipLabel = document.getElementById('flipLabel');
-            flipLabel.innerText = `FLIP ${betValue} OVER`;
-            flipLabel.style.display = 'block';
-            flipLabel.classList.add('flash');
-        });
-
-    </script>
 </body>
 </html>

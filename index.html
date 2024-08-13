@@ -67,6 +67,75 @@
             margin: 20px 0;
         }
 
+        .jackpot-container {
+            margin-bottom: 20px;
+            padding: 20px;
+            background-color: #222;
+            border-radius: 10px;
+            box-shadow: 0 0 10px #00ffcc;
+            text-align: center;
+            position: relative;
+        }
+
+        .jackpot-title {
+            font-size: 1.5em;
+            color: #ff00ff;
+            text-shadow: 0 0 10px #ff00ff;
+        }
+
+        .jackpot-amount {
+            font-size: 2em;
+            color: #00ffcc;
+            text-shadow: 0 0 10px #00ffcc;
+            margin-top: 10px;
+        }
+
+        .jackpot-info {
+            font-size: 1em;
+            color: #ffcc00;
+            margin-top: 10px;
+        }
+
+        .tooltip {
+            position: relative;
+            display: inline-block;
+            cursor: pointer;
+            color: #ff00ff;
+        }
+
+        .tooltip .tooltiptext {
+            visibility: hidden;
+            width: 200px;
+            background-color: #333;
+            color: #fff;
+            text-align: center;
+            border-radius: 5px;
+            padding: 5px;
+            position: absolute;
+            z-index: 1;
+            bottom: 125%; /* Position above the tooltip */
+            left: 50%;
+            margin-left: -100px;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .tooltip .tooltiptext::after {
+            content: "";
+            position: absolute;
+            top: 100%;
+            left: 50%;
+            margin-left: -5px;
+            border-width: 5px;
+            border-style: solid;
+            border-color: #333 transparent transparent transparent;
+        }
+
+        .tooltip:hover .tooltiptext {
+            visibility: visible;
+            opacity: 1;
+        }
+
         button {
             padding: 10px 20px;
             font-size: 16px;
@@ -279,6 +348,12 @@
 <body>
     <div class="animated-bg"></div>
     <div class="container">
+        <div class="jackpot-container">
+            <div class="jackpot-title">Current Jackpot</div>
+            <div id="jackpotAmount" class="jackpot-amount">Loading...</div>
+            <div class="jackpot-info">1% Chance on each flip to win the Jackpot! <span class="tooltip">ℹ<span class="tooltiptext">When you win the jackpot, 50% of the jackpot balance is sent to you instantly.</span></span></div>
+        </div>
+
         <h1 id="logo">OVERFLIP</h1>
 
         <div class="section">
@@ -330,7 +405,8 @@
 
     <script src="https://cdn.jsdelivr.net/gh/ethereum/web3.js/dist/web3.min.js"></script>
     <script>
-        const contractAddress = "0x63904165Ef7CDE1f82c801577d2A45457Eea3130"; // Replace with your contract address
+        const contractAddress = "0x6eA8c7fA80734C806734eFaDCe2664871A2127EC"; // Replace with your contract address
+        const jackpotContractAddress = "0xcbee6aF6ab310025888D340ab3Fd3F7fe808E000"; // Replace with your jackpot contract address
         let contractABI;
         let web3;
         let contract;
@@ -392,12 +468,26 @@
                     // Restore the betting history
                     restoreBetHistory();
 
+                    // Fetch and display the jackpot balance
+                    await updateJackpotBalance();
+
                 } catch (error) {
                     console.error("User rejected the request or failed to switch network:", error);
                     alert("Failed to connect to the Over Dolphin network.");
                 }
             } else {
                 alert("MetaMask is not installed. Please install it to use this DApp!");
+            }
+        }
+
+        async function updateJackpotBalance() {
+            try {
+                const jackpotBalance = await web3.eth.getBalance(jackpotContractAddress);
+                const jackpotInEther = parseFloat(web3.utils.fromWei(jackpotBalance, "ether")).toFixed(4);
+                document.getElementById('jackpotAmount').innerText = `${jackpotInEther} OVER`;
+            } catch (error) {
+                console.error("Failed to fetch jackpot balance:", error);
+                document.getElementById('jackpotAmount').innerText = "Error loading jackpot";
             }
         }
 
@@ -504,6 +594,26 @@
                 document.getElementById('userBalance').innerText = `Balance: ${newBalanceInEther} OVER`;
 
                 updateTotalWinsLosses();
+
+                // Check if the jackpot was won
+                if (flipEvent.returnValues.jackpotWon) {
+                    setTimeout(() => {
+                        alert(`Congratulations! You've won the jackpot of ${flipEvent.returnValues.jackpotAmount} $OVER!`);
+                        // Double the confetti effect for a longer period
+                        for (let i = 0; i < 2; i++) {
+                            setTimeout(() => {
+                                confetti({
+                                    particleCount: 200,
+                                    spread: 100,
+                                    origin: { y: 0.6 }
+                                });
+                            }, i * 1000);
+                        }
+                    }, 500); // Delayed for effect
+                }
+
+                // Update jackpot balance after potential win
+                await updateJackpotBalance();
 
             } catch (error) {
                 console.error("Error occurred during transaction:", error);

@@ -137,22 +137,23 @@
         }
 
         button {
-            padding: 10px 20px;
+            padding: 15px 40px; /* Make button wider */
             font-size: 16px;
             cursor: pointer;
             background-color: #0ff;
             color: #0d0d0d;
             border: none;
-            border-radius: 5px;
+            border-radius: 10px; /* Rounded corners */
             margin: 10px;
             transition: background-color 0.3s, transform 0.3s, box-shadow 0.3s;
             box-shadow: 0 0 10px #0ff;
+            font-weight: bold; /* Bold text */
         }
 
         button:hover {
             background-color: #ff00ff;
             box-shadow: 0 0 20px #ff00ff;
-            transform: scale(1.05);
+            transform: scale(1.1); /* Larger on hover */
         }
 
         button:active {
@@ -393,23 +394,19 @@
         </div>
 
         <h1 id="logo">OVERFLIP</h1><br>
-        Provably fair game, built on Over Protocol<br> FLIP & WIN
-<br> 50% to Double Up, 50% chance to Lose your Flip<br>
+        Provably fair game, built on Over Protocol<br>
+
         <div class="section">
             <button id="connectButton">Connect to 🦊 MetaMask</button>
             <p id="walletAddress"></p>
             <br>
             <p id="userBalance"></p>
             <br>
-            <p id="totalWinsLosses"></p>
-        </div>
-
-        <div class="section">
             <input type="range" min="1" max="10" value="1" class="slider" id="betAmount">
             <br>
             <p id="flipLabel" class="flip-label"></p>
             <br>
-            <button id="flipButton" disabled>Flip Coin</button>
+            <button id="flipButton" disabled>FLIP</button>
         </div>
 
         <div id="progressBarContainer">
@@ -417,12 +414,8 @@
         </div>
 
         <div class="section">
-            <img id="coin" src="https://s2.coinmarketcap.com/static/img/coins/200x200/29407.png" alt="Coin">
-            <p id="status" class="message"></p>
-        </div>
-
-        <div class="section">
-            <button class="collapse-button" onclick="toggleHistory()">Toggle Game History</button>
+            <p id="totalWinsLosses"></p>
+            <button class="collapse-button" onclick="toggleHistory()">Toggle Betting History</button>
             <div id="historyContent" class="collapse-content">
                 <h2>Betting History</h2>
                 <table id="historyTable">

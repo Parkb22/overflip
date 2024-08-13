@@ -125,7 +125,7 @@
         </div>
 
         <div class="section">
-            <img id="coin" src="https://via.placeholder.com/100" alt="Coin">
+            <img id="coin" src="https://s2.coinmarketcap.com/static/img/coins/200x200/29407.png" alt="Coin">
             <p id="status" class="message"></p>
         </div>
 
@@ -148,7 +148,7 @@
 
     <script src="https://cdn.jsdelivr.net/gh/ethereum/web3.js/dist/web3.min.js"></script>
     <script>
-        const contractAddress = "0x52fe966bd9038e95BcEf86531bf46FA1A13486ad"; // Replace with your contract address
+        const contractAddress = "0x5565d3E200E652c84a99e9aB78C61882Bf965425"; // Replace with your contract address
         let contractABI;
         let web3;
         let contract;
@@ -269,7 +269,7 @@
                 let wonLostAmount;
 
                 if (win) {
-                    const wonAmount = betAmountEther * 2;
+                    const wonAmount = betAmountEther * 1.9;
                     resultText = "Won";
                     wonLostAmount = wonAmount;
                     document.getElementById('status').innerText = `You won! Amount: ${wonAmount} $OVER`;

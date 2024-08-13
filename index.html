@@ -6,31 +6,66 @@
     <title>Coin Flip DApp</title>
     <style>
         body {
-            font-family: Arial, sans-serif;
-            text-align: center;
-            margin-top: 50px;
+            font-family: 'Arial', sans-serif;
+            background-color: #f4f4f4;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+        }
+        h1 {
+            color: #333;
         }
         button {
             padding: 10px 20px;
             font-size: 16px;
             cursor: pointer;
+            background-color: #333;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            margin: 10px;
+            transition: background-color 0.3s;
+        }
+        button:hover {
+            background-color: #555;
         }
         input {
             padding: 10px;
             font-size: 16px;
             margin: 10px 0;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            width: 200px;
         }
         table {
             margin-top: 20px;
-            width: 100%;
+            width: 80%;
+            max-width: 600px;
             border-collapse: collapse;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
         }
         table, th, td {
-            border: 1px solid black;
+            border: 1px solid #ddd;
         }
         th, td {
             padding: 10px;
             text-align: center;
+        }
+        th {
+            background-color: #333;
+            color: white;
+        }
+        #coin {
+            width: 100px;
+            height: 100px;
+            margin: 20px;
+            transition: transform 1s ease-in-out;
+        }
+        .flip {
+            transform: rotateY(1800deg);
         }
     </style>
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.4.0/dist/confetti.browser.min.js"></script>
@@ -44,6 +79,8 @@
     
     <input type="text" id="betAmount" placeholder="Enter amount of $OVER to bet">
     <button id="flipButton" disabled>Flip Coin</button>
+    
+    <img id="coin" src="https://upload.wikimedia.org/wikipedia/commons/thumb/e/e2/1_euro_coin_obverse_common_face.jpg/800px-1_euro_coin_obverse_common_face.jpg" alt="Coin">
     
     <p id="status"></p>
     
@@ -63,27 +100,52 @@
 
     <script src="https://cdn.jsdelivr.net/gh/ethereum/web3.js/dist/web3.min.js"></script>
     <script>
-        const contractAddress = "0x8A884da058b9F79DfC5374b5b0678b7b3c2F38Ac"; // Replace with your contract address
+        const contractAddress = "YOUR_CONTRACT_ADDRESS"; // Replace with your contract address
         let contractABI;
-
-        fetch('coinflip.json')
-            .then(response => response.json())
-            .then(abi => {
-                contractABI = abi;
-                web3 = new Web3(Web3.givenProvider || "http://localhost:8545");
-                contract = new web3.eth.Contract(contractABI, contractAddress);
-            })
-            .catch(error => {
-                console.error("Error loading the ABI:", error);
-            });
-
         let web3;
         let contract;
         let userAccount;
 
-        document.getElementById('connectButton').addEventListener('click', async () => {
+        const OVER_DOLPHIN_NETWORK_PARAMS = {
+            chainId: '0x84554c', // Chain ID 541764 in hexadecimal
+            chainName: 'Over Dolphin',
+            rpcUrls: ['https://wallet-dolphin.rpc.over.network/'],
+            nativeCurrency: {
+                name: 'OVER',
+                symbol: 'OVER',
+                decimals: 18
+            },
+            blockExplorerUrls: ['']
+        };
+
+        async function switchToOverDolphinNetwork() {
+            try {
+                await ethereum.request({
+                    method: 'wallet_switchEthereumChain',
+                    params: [{ chainId: OVER_DOLPHIN_NETWORK_PARAMS.chainId }]
+                });
+            } catch (switchError) {
+                if (switchError.code === 4902) {
+                    try {
+                        await ethereum.request({
+                            method: 'wallet_addEthereumChain',
+                            params: [OVER_DOLPHIN_NETWORK_PARAMS]
+                        });
+                    } catch (addError) {
+                        console.error('Failed to add Over Dolphin network:', addError);
+                    }
+                }
+            }
+        }
+
+        async function checkNetworkAndConnect() {
             if (typeof window.ethereum !== 'undefined') {
                 try {
+                    const network = await web3.eth.getChainId();
+                    if (network !== 541764) {
+                        await switchToOverDolphinNetwork();
+                    }
+
                     const accounts = await ethereum.request({ method: 'eth_requestAccounts' });
                     userAccount = accounts[0];
                     document.getElementById('walletAddress').innerText = `Connected: ${userAccount}`;
@@ -92,13 +154,27 @@
                     // Fetch and display the user's balance
                     const balance = await web3.eth.getBalance(userAccount);
                     const balanceInEther = web3.utils.fromWei(balance, "ether");
-                    document.getElementById('userBalance').innerText = `Balance: ${balanceInEther} ETH`;
+                    document.getElementById('userBalance').innerText = `Balance: ${balanceInEther} OVER`;
 
                 } catch (error) {
-                    console.error("User rejected the request.");
+                    console.error("User rejected the request or failed to switch network:", error);
                 }
             } else {
                 alert("MetaMask is not installed. Please install it to use this DApp!");
+            }
+        }
+
+        document.getElementById('connectButton').addEventListener('click', async () => {
+            web3 = new Web3(Web3.givenProvider || "http://localhost:8545");
+
+            try {
+                const response = await fetch('coinflip.json');
+                contractABI = await response.json();
+                contract = new web3.eth.Contract(contractABI, contractAddress);
+                await checkNetworkAndConnect();
+            } catch (error) {
+                console.error("Error loading the ABI or initializing the contract:", error);
+                document.getElementById('status').innerText = "Failed to load contract.";
             }
         });
 
@@ -119,6 +195,14 @@
                     from: userAccount,
                     value: betAmount,
                 });
+
+                // Coin flip animation
+                const coinElement = document.getElementById('coin');
+                coinElement.classList.add('flip');
+
+                setTimeout(() => {
+                    coinElement.classList.remove('flip');
+                }, 1000);
 
                 const win = receipt.events.FlipResult.returnValues.win;
                 const betAmountEther = web3.utils.fromWei(betAmount, "ether");
@@ -150,7 +234,7 @@
                 // Update balance after the transaction
                 const newBalance = await web3.eth.getBalance(userAccount);
                 const newBalanceInEther = web3.utils.fromWei(newBalance, "ether");
-                document.getElementById('userBalance').innerText = `Balance: ${newBalanceInEther} ETH`;
+                document.getElementById('userBalance').innerText = `Balance: ${newBalanceInEther} OVER`;
 
             } catch (error) {
                 console.error("Error occurred during transaction:", error);

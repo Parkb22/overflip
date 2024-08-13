@@ -168,6 +168,7 @@
             <button id="connectButton">Connect to 🦊 MetaMask</button>
             <p id="walletAddress"></p>
             <p id="userBalance"></p>
+            <p id="totalWinsLosses"></p>
         </div>
 
         <div class="section">
@@ -185,6 +186,7 @@
             <table id="historyTable">
                 <thead>
                     <tr>
+                        <th>Block Number</th>
                         <th>Bet Amount ($OVER)</th>
                         <th>Result</th>
                         <th>Won/Lost Amount ($OVER)</th>
@@ -349,12 +351,14 @@
                 }
 
                 // Add the result to the history table and save to localStorage
-                addBetToHistory(betAmountEther, resultText, wonLostAmount);
+                addBetToHistory(receipt.blockNumber, betAmountEther, resultText, wonLostAmount, receipt.transactionHash);
 
-                // Update balance after the transaction
+                // Update balance and total wins/losses after the transaction
                 const newBalance = await web3.eth.getBalance(userAccount);
                 const newBalanceInEther = web3.utils.fromWei(newBalance, "ether");
                 document.getElementById('userBalance').innerText = `Balance: ${newBalanceInEther} OVER`;
+
+                updateTotalWinsLosses();
 
             } catch (error) {
                 console.error("Error occurred during transaction:", error);
@@ -363,8 +367,8 @@
             }
         });
 
-        function addBetToHistory(betAmount, result, wonLostAmount) {
-            betHistory.push({ betAmount, result, wonLostAmount });
+        function addBetToHistory(blockNumber, betAmount, result, wonLostAmount, transactionHash) {
+            betHistory.push({ blockNumber, betAmount, result, wonLostAmount, transactionHash });
             localStorage.setItem('betHistory', JSON.stringify(betHistory));
             updateBetHistoryTable();
         }
@@ -375,10 +379,12 @@
             betHistory.forEach((bet) => {
                 const newRow = tableBody.insertRow();
 
-                const betCell = newRow.insertCell(0);
-                const resultCell = newRow.insertCell(1);
-                const amountCell = newRow.insertCell(2);
+                const blockCell = newRow.insertCell(0);
+                const betCell = newRow.insertCell(1);
+                const resultCell = newRow.insertCell(2);
+                const amountCell = newRow.insertCell(3);
 
+                blockCell.innerHTML = `<a href="https://dolphin.view.over.network/tx/${bet.transactionHash}" target="_blank">${bet.blockNumber}</a>`;
                 betCell.innerText = `${bet.betAmount} $OVER`;
                 resultCell.innerText = bet.result;
                 amountCell.innerText = `${bet.wonLostAmount} $OVER`;
@@ -387,6 +393,22 @@
 
         function restoreBetHistory() {
             updateBetHistoryTable();
+            updateTotalWinsLosses();
+        }
+
+        function updateTotalWinsLosses() {
+            let totalWins = 0;
+            let totalLosses = 0;
+
+            betHistory.forEach(bet => {
+                if (bet.result === "Won") {
+                    totalWins += parseFloat(bet.wonLostAmount);
+                } else {
+                    totalLosses += parseFloat(bet.betAmount);
+                }
+            });
+
+            document.getElementById('totalWinsLosses').innerText = `Total Wins: ${totalWins} OVER | Total Losses: ${totalLosses} OVER`;
         }
 
         function triggerSadFaceEmojis() {

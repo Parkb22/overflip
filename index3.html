@@ -19,7 +19,18 @@
             animation: gradientAnimation 15s ease infinite;
             overflow: auto;
         }
+     
+        @keyframes colorFlash {
+    0% { color: #ffcc00; }  /* Yellow */
+    25% { color: #ff00ff; } /* Magenta */
+    50% { color: #00ffcc; } /* Cyan */
+    75% { color: #ff6600; } /* Orange */
+    100% { color: #ffcc00; } /* Back to Yellow */
+}
 
+.rapid-flash {
+    animation: colorFlash 0.5s infinite; /* Flashes rapidly */
+}
         @keyframes gradientAnimation {
             0% { background-position: 0% 50%; }
             50% { background-position: 100% 50%; }
@@ -810,14 +821,14 @@
             }
         }
 
-        document.getElementById('betAmount').addEventListener('input', function () {
-            const betValue = this.value;
-            document.getElementById('totalWinsLosses').style.display = 'none';
-            const flipLabel = document.getElementById('flipLabel');
-            flipLabel.innerText = `FLIP ${betValue} OVER`;
-            flipLabel.style.display = 'block';
-            flipLabel.classList.add('flash');
-        });
+document.getElementById('betAmount').addEventListener('input', function () {
+    const betValue = this.value;
+    document.getElementById('totalWinsLosses').style.display = 'none';
+    const flipLabel = document.getElementById('flipLabel');
+    flipLabel.innerText = `FLIP ${betValue} OVER`;
+    flipLabel.style.display = 'block';
+    flipLabel.classList.add('flash', 'rapid-flash'); // Add the 'rapid-flash' class here
+});
     </script>
 </body>
 </html>

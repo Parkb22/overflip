@@ -463,6 +463,31 @@
         blockExplorerUrls: ['']
     };
 
+    document.getElementById('connectButton').addEventListener('click', async () => {
+    web3 = new Web3(Web3.givenProvider || "http://localhost:8545");
+
+    try {
+        const response = await fetch('coinflip.json');
+        const contractData = await response.json();
+        contractABI = contractData.abi;
+        const networkId = await web3.eth.getChainId();
+        const contractAddress = contractData.networks[networkId]?.address;
+
+        if (!contractAddress) {
+            throw new Error("Contract not deployed on the current network.");
+        }
+
+        contract = new web3.eth.Contract(contractABI, contractAddress);
+
+        // Check if user is on the Over Dolphin network
+        await checkNetworkAndConnect();
+    } catch (error) {
+        console.error("Error loading the ABI or initializing the contract:", error);
+        document.getElementById('status').innerText = "Failed to load contract.";
+    }
+});
+
+
     async function switchToOverDolphinNetwork() {
         try {
             await ethereum.request({

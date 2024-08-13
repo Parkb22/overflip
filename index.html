@@ -7,100 +7,148 @@
     <style>
         body {
             font-family: 'Arial', sans-serif;
-            background-color: #f4f4f4;
+            background-color: #ffffff;
+            margin: 0;
+            padding: 0;
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
             height: 100vh;
-            margin: 0;
         }
+
+        .container {
+            width: 80%;
+            max-width: 600px;
+            padding: 20px;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+            border-radius: 10px;
+            background-color: #f9f9f9;
+            margin-top: 20px;
+            text-align: center;
+        }
+
         h1 {
             color: #333;
         }
+
+        .section {
+            margin: 20px 0;
+        }
+
         button {
             padding: 10px 20px;
             font-size: 16px;
             cursor: pointer;
-            background-color: #333;
+            background-color: #007bff;
             color: #fff;
             border: none;
             border-radius: 5px;
             margin: 10px;
-            transition: background-color 0.3s;
+            transition: background-color 0.3s, transform 0.3s;
         }
+
         button:hover {
-            background-color: #555;
+            background-color: #0056b3;
+            transform: scale(1.05);
         }
+
         input {
             padding: 10px;
             font-size: 16px;
             margin: 10px 0;
             border: 1px solid #ccc;
             border-radius: 5px;
-            width: 200px;
+            width: calc(100% - 22px);
         }
+
         table {
-            margin-top: 20px;
-            width: 80%;
-            max-width: 600px;
+            width: 100%;
             border-collapse: collapse;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            margin-top: 20px;
         }
+
         table, th, td {
             border: 1px solid #ddd;
         }
+
         th, td {
             padding: 10px;
             text-align: center;
         }
+
         th {
-            background-color: #333;
+            background-color: #007bff;
             color: white;
         }
+
         #coin {
             width: 100px;
             height: 100px;
-            margin: 20px;
+            margin: 20px auto;
             transition: transform 1s ease-in-out;
         }
+
         .flip {
             transform: rotateY(1800deg);
+        }
+
+        .message {
+            font-size: 1.2em;
+            font-weight: bold;
+            color: #333;
+        }
+
+        .win {
+            color: #28a745;
+        }
+
+        .lose {
+            color: #dc3545;
         }
     </style>
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.4.0/dist/confetti.browser.min.js"></script>
 </head>
 <body>
-    <h1>Coin Flip DApp</h1>
-    
-    <button id="connectButton">Connect to MetaMask</button>
-    <p id="walletAddress"></p>
-    <p id="userBalance"></p>
-    
-    <input type="text" id="betAmount" placeholder="Enter amount of $OVER to bet">
-    <button id="flipButton" disabled>Flip Coin</button>
-    
-    <img id="coin" src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQUsI9GfG_9remQiNiEIi09ifURkTGMpvtJ6w&s" alt="Coin">
-    
-    <p id="status"></p>
-    
-    <h2>Betting History</h2>
-    <table id="historyTable" border="1">
-        <thead>
-            <tr>
-                <th>Bet Amount ($OVER)</th>
-                <th>Result</th>
-                <th>Won/Lost Amount ($OVER)</th>
-            </tr>
-        </thead>
-        <tbody>
-            <!-- Betting history will be dynamically inserted here -->
-        </tbody>
-    </table>
+    <div class="container">
+        <h1>Coin Flip DApp</h1>
+
+        <div class="section">
+            <button id="connectButton">Connect to MetaMask</button>
+            <p id="walletAddress"></p>
+            <p id="userBalance"></p>
+        </div>
+
+        <div class="section">
+            <input type="text" id="betAmount" placeholder="Enter amount of $OVER to bet">
+            <button id="flipButton" disabled>Flip Coin</button>
+        </div>
+
+        <div class="section">
+            <img id="coin" src="https://via.placeholder.com/100" alt="Coin">
+            <p id="status" class="message"></p>
+        </div>
+
+        <div class="section">
+            <h2>Betting History</h2>
+            <table id="historyTable">
+                <thead>
+                    <tr>
+                        <th>Bet Amount ($OVER)</th>
+                        <th>Result</th>
+                        <th>Won/Lost Amount ($OVER)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Betting history will be dynamically inserted here -->
+                </tbody>
+            </table>
+        </div>
+    </div>
 
     <script src="https://cdn.jsdelivr.net/gh/ethereum/web3.js/dist/web3.min.js"></script>
     <script>
-        const contractAddress = "0x3eACF4415e5f6121F152DAc028375fd030Ab1041"; // Replace with your contract address
+        const contractAddress = "0x52fe966bd9038e95BcEf86531bf46FA1A13486ad"; // Replace with your contract address
         let contractABI;
         let web3;
         let contract;
@@ -209,7 +257,12 @@
                     coinElement.classList.remove('flip');
                 }, 1000);
 
-                const win = receipt.events.FlipResult.returnValues.win;
+                const flipEvent = receipt.events.FlipResult;
+                if (!flipEvent || !flipEvent.returnValues) {
+                    throw new Error("Unexpected result from the contract.");
+                }
+
+                const win = flipEvent.returnValues.win;
                 const betAmountEther = web3.utils.fromWei(betAmount, "ether");
 
                 let resultText;
@@ -220,6 +273,7 @@
                     resultText = "Won";
                     wonLostAmount = wonAmount;
                     document.getElementById('status').innerText = `You won! Amount: ${wonAmount} $OVER`;
+                    document.getElementById('status').classList.add('win');
 
                     // Trigger the confetti effect
                     confetti({
@@ -231,6 +285,7 @@
                     resultText = "Lost";
                     wonLostAmount = betAmountEther;
                     document.getElementById('status').innerText = `You lost! Amount: ${betAmountEther} $OVER`;
+                    document.getElementById('status').classList.add('lose');
                 }
 
                 // Add the result to the history table
@@ -244,6 +299,7 @@
             } catch (error) {
                 console.error("Error occurred during transaction:", error);
                 document.getElementById('status').innerText = "Error occurred: " + error.message;
+                document.getElementById('status').classList.add('lose');
             }
         });
 

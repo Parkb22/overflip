@@ -381,6 +381,10 @@
             50% { opacity: 0.5; }
             100% { opacity: 1; }
         }
+
+        .hidden {
+            display: none;
+        }
     </style>
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.4.0/dist/confetti.browser.min.js"></script>
 </head>
@@ -402,11 +406,13 @@
             <br>
             <p id="userBalance"></p>
             <br>
-            <input type="range" min="1" max="10" value="1" class="slider" id="betAmount">
-            <br>
-            <p id="flipLabel" class="flip-label"></p>
-            <br>
-            <button id="flipButton" disabled>FLIP</button>
+            <div id="bettingArea">
+                <input type="range" min="1" max="10" value="1" class="slider" id="betAmount">
+                <br>
+                <p id="flipLabel" class="flip-label"></p>
+                <br>
+                <button id="flipButton" disabled>FLIP</button>
+            </div>
         </div>
 
         <div id="progressBarContainer">
@@ -554,22 +560,17 @@
             }
             const betAmount = web3.utils.toWei(betAmountInput, "ether");
 
-            document.getElementById('status').innerText = "Flipping the coin...";
+            // Hide betting area and show progress bar
+            document.getElementById('bettingArea').classList.add('hidden');
             document.getElementById('progressBarContainer').style.display = 'block';
+
+            document.getElementById('status').innerText = "Flipping the coin...";
 
             try {
                 const receipt = await contract.methods.flip().send({
                     from: userAccount,
                     value: betAmount,
                 });
-
-                document.getElementById('progressBarContainer').style.display = 'none';
-
-                // Rotate the logo after the bet
-                document.getElementById('logo').classList.add('rotate');
-                setTimeout(() => {
-                    document.getElementById('logo').classList.remove('rotate');
-                }, 1000);
 
                 // Coin flip animation
                 const coinElement = document.getElementById('coin');
@@ -648,10 +649,17 @@
                 // Update jackpot balance after potential win
                 await updateJackpotBalance();
 
+                // Show the betting area again after 3 seconds
+                setTimeout(() => {
+                    document.getElementById('bettingArea').classList.remove('hidden');
+                    document.getElementById('status').innerText = '';
+                }, 3000);
+
             } catch (error) {
                 console.error("Error occurred during transaction:", error);
                 document.getElementById('status').innerText = "Error occurred: " + error.message;
                 document.getElementById('status').classList.add('lose');
+            } finally {
                 document.getElementById('progressBarContainer').style.display = 'none';
             }
         });

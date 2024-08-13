@@ -27,8 +27,19 @@
     <script src="https://cdn.jsdelivr.net/gh/ethereum/web3.js/dist/web3.min.js"></script>
     <script>
         const contractAddress = "0x8A884da058b9F79DfC5374b5b0678b7b3c2F38Ac"; // Replace with your contract address
-        const contractABI = ['coinflip.abi']; // Replace with your contract ABI
+     let contractABI;
+fetch('coinflip.json')
+    .then(response => response.json())
+    .then(abi => {
+        contractABI = abi;
 
+        // Initialize Web3 instance and contract only after ABI is loaded
+        web3 = new Web3(Web3.givenProvider || "http://localhost:8545");
+        contract = new web3.eth.Contract(contractABI, contractAddress);
+    })
+    .catch(error => {
+        console.error("Error loading the ABI:", error);
+    });
         let web3;
         let contract;
         let userAccount;

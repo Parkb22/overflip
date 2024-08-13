@@ -15,31 +15,40 @@
             font-size: 16px;
             cursor: pointer;
         }
+        input {
+            padding: 10px;
+            font-size: 16px;
+            margin: 10px 0;
+        }
     </style>
 </head>
 <body>
     <h1>Coin Flip DApp</h1>
-    <button id="connectButton">Connect to 🦊 MetaMask</button>
+    
+    <button id="connectButton">Connect to MetaMask</button>
     <p id="walletAddress"></p>
+    
+    <input type="text" id="betAmount" placeholder="Enter amount of $OVER to bet">
     <button id="flipButton" disabled>Flip Coin</button>
+    
     <p id="status"></p>
 
     <script src="https://cdn.jsdelivr.net/gh/ethereum/web3.js/dist/web3.min.js"></script>
     <script>
-        const contractAddress = "0x8A884da058b9F79DfC5374b5b0678b7b3c2F38Ac"; // Replace with your contract address
-     let contractABI;
-fetch('coinflip.json')
-    .then(response => response.json())
-    .then(abi => {
-        contractABI = abi;
+        const contractAddress = "YOUR_CONTRACT_ADDRESS"; // Replace with your contract address
+        let contractABI;
 
-        // Initialize Web3 instance and contract only after ABI is loaded
-        web3 = new Web3(Web3.givenProvider || "http://localhost:8545");
-        contract = new web3.eth.Contract(contractABI, contractAddress);
-    })
-    .catch(error => {
-        console.error("Error loading the ABI:", error);
-    });
+        fetch('coinflip.json')
+            .then(response => response.json())
+            .then(abi => {
+                contractABI = abi;
+                web3 = new Web3(Web3.givenProvider || "http://localhost:8545");
+                contract = new web3.eth.Contract(contractABI, contractAddress);
+            })
+            .catch(error => {
+                console.error("Error loading the ABI:", error);
+            });
+
         let web3;
         let contract;
         let userAccount;
@@ -51,10 +60,6 @@ fetch('coinflip.json')
                     userAccount = accounts[0];
                     document.getElementById('walletAddress').innerText = `Connected: ${userAccount}`;
                     document.getElementById('flipButton').disabled = false;
-
-                    // Initialize Web3 instance and contract
-                    web3 = new Web3(Web3.givenProvider || "http://localhost:8545");
-                    contract = new web3.eth.Contract(contractABI, contractAddress);
                 } catch (error) {
                     console.error("User rejected the request.");
                 }
@@ -64,7 +69,8 @@ fetch('coinflip.json')
         });
 
         document.getElementById('flipButton').addEventListener('click', async () => {
-            const betAmount = web3.utils.toWei("0.1", "ether"); // 0.1 ETH bet
+            const betAmountInput = document.getElementById('betAmount').value;
+            const betAmount = web3.utils.toWei(betAmountInput, "ether"); // Assuming $OVER is pegged to ETH for simplicity
 
             document.getElementById('status').innerText = "Flipping the coin...";
 
@@ -74,8 +80,15 @@ fetch('coinflip.json')
                     value: betAmount,
                 });
 
-                const result = receipt.events.FlipResult.returnValues.win;
-                document.getElementById('status').innerText = result ? "You won!" : "You lost!";
+                const win = receipt.events.FlipResult.returnValues.win;
+                const betAmountEther = web3.utils.fromWei(betAmount, "ether");
+
+                if (win) {
+                    const wonAmount = betAmountEther * 2;
+                    document.getElementById('status').innerText = `You won! Amount: ${wonAmount} $OVER`;
+                } else {
+                    document.getElementById('status').innerText = `You lost! Amount: ${betAmountEther} $OVER`;
+                }
             } catch (error) {
                 document.getElementById('status').innerText = "Error occurred: " + error.message;
             }

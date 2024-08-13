@@ -514,10 +514,11 @@
         });
 
         function flashBackground(color) {
-            document.body.style.transition = 'background-color 0.5s';
+            document.body.style.transition = 'background-color 0.5s ease';
             document.body.style.backgroundColor = color;
             setTimeout(() => {
-                document.body.style.backgroundColor = '';
+                document.body.style.transition = 'background-color 1s ease';
+                document.body.style.backgroundColor = ''; // Reset to original gradient
             }, 1000);
         }
 

@@ -86,6 +86,11 @@
             transform: scale(1.05);
         }
 
+        button:active {
+            transform: scale(0.95);
+            box-shadow: 0 0 15px #0ff;
+        }
+
         #connectButton {
             background-color: #f6851b;
             box-shadow: 0 0 10px #f6851b;
@@ -247,6 +252,27 @@
             overflow: hidden;
             transition: max-height 0.2s ease-out;
         }
+
+        #progressBarContainer {
+            width: 100%;
+            background-color: #333;
+            border-radius: 5px;
+            margin: 20px 0;
+            display: none;
+        }
+
+        #progressBar {
+            width: 0%;
+            height: 10px;
+            background-color: #0ff;
+            border-radius: 5px;
+            animation: progress 2s linear infinite;
+        }
+
+        @keyframes progress {
+            0% { width: 0%; }
+            100% { width: 100%; }
+        }
     </style>
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.4.0/dist/confetti.browser.min.js"></script>
 </head>
@@ -269,6 +295,10 @@
             <br>
             <button id="maxBetButton">Max Bet</button>
             <button id="flipButton" disabled>Flip Coin</button>
+        </div>
+
+        <div id="progressBarContainer">
+            <div id="progressBar"></div>
         </div>
 
         <div class="section">
@@ -402,12 +432,15 @@
             const betAmount = web3.utils.toWei(betAmountInput, "ether");
 
             document.getElementById('status').innerText = "Flipping the coin...";
+            document.getElementById('progressBarContainer').style.display = 'block';
 
             try {
                 const receipt = await contract.methods.flip().send({
                     from: userAccount,
                     value: betAmount,
                 });
+
+                document.getElementById('progressBarContainer').style.display = 'none';
 
                 // Rotate the logo after the bet
                 document.getElementById('logo').classList.add('rotate');
@@ -447,12 +480,19 @@
                         spread: 70,
                         origin: { y: 0.6 }
                     });
+
+                    // Flash green background
+                    flashBackground('green');
+
                 } else {
                     resultText = "Lost";
                     wonLostAmount = betAmountEther;
                     document.getElementById('status').innerText = `You lost! Amount: ${betAmountEther} $OVER`;
                     document.getElementById('status').classList.add('lose');
                     triggerSadFaceEmojis();
+
+                    // Flash red background
+                    flashBackground('red');
                 }
 
                 // Add the result to the history table and save to localStorage
@@ -469,8 +509,17 @@
                 console.error("Error occurred during transaction:", error);
                 document.getElementById('status').innerText = "Error occurred: " + error.message;
                 document.getElementById('status').classList.add('lose');
+                document.getElementById('progressBarContainer').style.display = 'none';
             }
         });
+
+        function flashBackground(color) {
+            document.body.style.transition = 'background-color 0.5s';
+            document.body.style.backgroundColor = color;
+            setTimeout(() => {
+                document.body.style.backgroundColor = '';
+            }, 1000);
+        }
 
         function addBetToHistory(blockNumber, betAmount, result, wonLostAmount, transactionHash) {
             betHistory.unshift({ blockNumber, betAmount, result, wonLostAmount, transactionHash });

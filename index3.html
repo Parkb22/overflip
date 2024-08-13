@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!DOCTYPE html> 
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -381,16 +381,25 @@
             100% { opacity: 1; }
         }
 
-        @keyframes colorFlash {
-            0% { color: #ffcc00; }
-            25% { color: #ff00ff; }
-            50% { color: #00ffcc; }
-            75% { color: #ff6600; }
-            100% { color: #ffcc00; }
+        .rotate-flipping {
+            animation: rotateFlipping 1s linear infinite;
         }
 
-        .rapid-flash {
-            animation: colorFlash 0.5s infinite;
+        @keyframes rotateFlipping {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        .floating-question-mark {
+            position: absolute;
+            font-size: 2em;
+            pointer-events: none;
+            animation: floatQuestionMark 2s ease-in-out infinite;
+        }
+
+        @keyframes floatQuestionMark {
+            0% { transform: translateY(0) translateX(0) rotate(0deg); opacity: 1; }
+            100% { transform: translateY(-100px) translateX(50px) rotate(360deg); opacity: 0; }
         }
     </style>
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.4.0/dist/confetti.browser.min.js"></script>
@@ -573,8 +582,12 @@
             }
             const betAmount = web3.utils.toWei(betAmountInput, "ether");
 
-            document.getElementById('status').innerText = "Flipping the coin...";
+            document.getElementById('status').innerText = "NOW FLIPPING";
+            document.getElementById('flipButton').innerText = "FLIPPING";
+            document.getElementById('flipButton').classList.add('rotate-flipping');
             document.getElementById('progressBarContainer').style.display = 'block';
+
+            generateQuestionMarkEmojis();
 
             try {
                 const receipt = await contract.methods.flip().send({
@@ -583,6 +596,8 @@
                 });
 
                 document.getElementById('progressBarContainer').style.display = 'none';
+                document.getElementById('flipButton').classList.remove('rotate-flipping');
+                document.getElementById('flipButton').innerText = "Flip Coin";
 
                 // Rotate the logo after the bet
                 document.getElementById('logo').classList.add('rotate');
@@ -667,30 +682,14 @@
                 // Update jackpot balance after potential win
                 await updateJackpotBalance();
 
-                // Make the "FLIP X OVER" label flash rapidly after the flip
-                const flipLabel = document.getElementById('flipLabel');
-                flipLabel.classList.add('rapid-flash');
-
             } catch (error) {
                 console.error("Error occurred during transaction:", error);
                 document.getElementById('status').innerText = "Error occurred: " + error.message;
                 document.getElementById('status').classList.add('lose');
                 document.getElementById('progressBarContainer').style.display = 'none';
+                document.getElementById('flipButton').classList.remove('rotate-flipping');
+                document.getElementById('flipButton').innerText = "Flip Coin";
             }
-        });
-
-        document.getElementById('betAmount').addEventListener('input', function () {
-            const betValue = this.value;
-            const flipLabel = document.getElementById('flipLabel');
-            
-            // Calculate the font size based on the slider value
-            const fontSize = 20 + (betValue * 5); // 20px base size, increases with slider value
-            flipLabel.style.fontSize = `${fontSize}px`;
-
-            document.getElementById('totalWinsLosses').style.display = 'none';
-            flipLabel.innerText = `FLIP ${betValue} OVER`;
-            flipLabel.style.display = 'block';
-            flipLabel.classList.add('flash');
         });
 
         function flashBackground(color) {
@@ -793,6 +792,32 @@
                 updateTotalWinsLosses();
             }
         }
+
+        function generateQuestionMarkEmojis() {
+            const container = document.querySelector('.container');
+            for (let i = 0; i < 10; i++) {
+                const emoji = document.createElement('div');
+                emoji.className = 'floating-question-mark';
+                emoji.innerText = '❓';
+                emoji.style.top = `${Math.random() * 100}%`;
+                emoji.style.left = `${Math.random() * 100}%`;
+                emoji.style.animationDuration = `${Math.random() * 2 + 3}s`;
+                container.appendChild(emoji);
+
+                setTimeout(() => {
+                    emoji.remove();
+                }, 5000);
+            }
+        }
+
+        document.getElementById('betAmount').addEventListener('input', function () {
+            const betValue = this.value;
+            document.getElementById('totalWinsLosses').style.display = 'none';
+            const flipLabel = document.getElementById('flipLabel');
+            flipLabel.innerText = `FLIP ${betValue} OVER`;
+            flipLabel.style.display = 'block';
+            flipLabel.classList.add('flash');
+        });
     </script>
 </body>
 </html>

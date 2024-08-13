@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OverFlip.Fun</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.4.0/dist/confetti.browser.min.js"></script>
+</head>
+<body>
+    <div class="animated-bg"></div>
+    <div class="container">
+        <div class="jackpot-container">
+            <div class="jackpot-title">Current Jackpot</div>
+            <div id="jackpotAmount" class="jackpot-amount">Loading...</div>
+            <div class="jackpot-info">1% Chance on each flip to win the Jackpot! <span class="tooltip">ℹ<span class="tooltiptext">When you win the jackpot, 50% of the jackpot balance is sent to you instantly.</span></span></div>
+        </div>
+
+        <h1 id="logo">OVERFLIP</h1><br>
+        Provably fair game, built on Over Protocol<br> FLIP & WIN
+<br> 50% to Double Up, 50% chance to Lose your Flip<br>
+        <div class="section">
+            <button id="connectButton">Connect to 🦊 MetaMask</button>
+            <p id="walletAddress"></p>
+            <br>
+            <p id="userBalance"></p>
+            <br>
+            <p id="totalWinsLosses"></p>
+        </div>
+
+        <div class="section">
+            <input type="range" min="1" max="10" value="1" class="slider" id="betAmount">
+            <br>
+            <p id="flipLabel" class="flip-label"></p>
+            <br>
+            <button id="flipButton" disabled>Flip Coin</button>
+        </div>
+
+        <div id="progressBarContainer">
+            <div id="progressBar"></div>
+        </div>
+
+        <div class="section">
+            <img id="coin" src="https://s2.coinmarketcap.com/static/img/coins/200x200/29407.png" alt="Coin">
+            <p id="status" class="message"></p>
+        </div>
+
+        <div class="section">
+            <button class="collapse-button" onclick="toggleHistory()">Toggle Game History</button>
+            <div id="historyContent" class="collapse-content">
+                <h2>Betting History</h2>
+                <table id="historyTable">
+                    <thead>
+                        <tr>
+                            <th>Block Number</th>
+                            <th>Bet Amount ($OVER)</th>
+                            <th>Result</th>
+                            <th>Won/Lost Amount ($OVER)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- Betting history will be dynamically inserted here -->
+                    </tbody>
+                </table>
+                <button onclick="clearHistory()">Clear Betting History</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/gh/ethereum/web3.js/dist/web3.min.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>

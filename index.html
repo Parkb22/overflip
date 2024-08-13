@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Coin Flip DApp</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin-top: 50px;
+        }
+        button {
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <h1>Coin Flip DApp</h1>
+    <button id="flipButton">Flip Coin</button>
+    <p id="status"></p>
+
+    <script src="https://cdn.jsdelivr.net/gh/ethereum/web3.js/dist/web3.min.js"></script>
+    <script>
+        const contractAddress = "YOUR_CONTRACT_ADDRESS"; // Replace with your contract address
+        const contractABI = [/* ABI JSON here */]; // Replace with your contract ABI
+
+        const web3 = new Web3(Web3.givenProvider || "http://localhost:8545");
+        const contract = new web3.eth.Contract(contractABI, contractAddress);
+
+        document.getElementById('flipButton').addEventListener('click', async () => {
+            const accounts = await ethereum.request({ method: 'eth_requestAccounts' });
+            const account = accounts[0];
+            const betAmount = web3.utils.toWei("0.1", "ether"); // 0.1 ETH bet
+
+            document.getElementById('status').innerText = "Flipping the coin...";
+
+            try {
+                const receipt = await contract.methods.flip().send({
+                    from: account,
+                    value: betAmount,
+                });
+
+                const result = receipt.events.FlipResult.returnValues.win;
+                document.getElementById('status').innerText = result ? "You won!" : "You lost!";
+            } catch (error) {
+                document.getElementById('status').innerText = "Error occurred: " + error.message;
+            }
+        });
+    </script>
+</body>
+</html>

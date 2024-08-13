@@ -10,14 +10,14 @@
             margin: 0;
             padding: 0;
             display: flex;
-            flex-direction: column;
             align-items: center;
             justify-content: center;
-            height: 100vh;
+            min-height: 100vh;
             color: #fff;
             background: linear-gradient(135deg, #1a1a1a, #333, #1a1a1a);
             background-size: 400% 400%;
             animation: gradientAnimation 15s ease infinite;
+            overflow: auto;
         }
 
         @keyframes gradientAnimation {
@@ -120,6 +120,16 @@
             color: white;
         }
 
+        td a {
+            color: #ffcc00;
+            text-decoration: none;
+        }
+
+        td a:hover {
+            color: #ff6600;
+            text-decoration: underline;
+        }
+
         #coin {
             width: 100px;
             height: 100px;
@@ -146,6 +156,29 @@
             color: #dc3545;
         }
 
+        #userBalance {
+            font-size: 1.5em;
+            font-weight: bold;
+            color: #00ffcc;
+            text-shadow: 0 0 10px #00ffcc;
+        }
+
+        #totalWinsLosses {
+            margin-top: 10px;
+            font-size: 1.2em;
+            color: #ffcc00;
+        }
+
+        .profit {
+            color: #28a745;
+            text-shadow: 0 0 10px #28a745;
+        }
+
+        .loss {
+            color: #dc3545;
+            text-shadow: 0 0 10px #dc3545;
+        }
+
         .floating-emoji {
             position: absolute;
             font-size: 2em;
@@ -157,17 +190,38 @@
             0% { transform: translateY(0) translateX(0) rotate(0deg); opacity: 1; }
             100% { transform: translateY(-100px) translateX(50px) rotate(360deg); opacity: 0; }
         }
+
+        /* Additional Animation Background */
+        .animated-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle, rgba(63,94,251,1) 0%, rgba(252,70,107,1) 100%);
+            animation: bgAnimation 20s linear infinite alternate;
+            z-index: -1;
+            opacity: 0.5;
+        }
+
+        @keyframes bgAnimation {
+            0% { background-position: 0% 50%; }
+            100% { background-position: 100% 50%; }
+        }
     </style>
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.4.0/dist/confetti.browser.min.js"></script>
 </head>
 <body>
+    <div class="animated-bg"></div>
     <div class="container">
         <h1>OVERFLIP</h1>
 
         <div class="section">
             <button id="connectButton">Connect to 🦊 MetaMask</button>
             <p id="walletAddress"></p>
+            <br>
             <p id="userBalance"></p>
+            <br>
             <p id="totalWinsLosses"></p>
         </div>
 
@@ -257,7 +311,7 @@
 
                     // Fetch and display the user's balance
                     const balance = await web3.eth.getBalance(userAccount);
-                    const balanceInEther = web3.utils.fromWei(balance, "ether");
+                    const balanceInEther = parseFloat(web3.utils.fromWei(balance, "ether")).toFixed(4);
                     document.getElementById('userBalance').innerText = `Balance: ${balanceInEther} OVER`;
 
                     // Restore the betting history
@@ -324,13 +378,13 @@
                 }
 
                 const win = flipEvent.returnValues.win;
-                const betAmountEther = web3.utils.fromWei(betAmount, "ether");
+                const betAmountEther = parseFloat(web3.utils.fromWei(betAmount, "ether")).toFixed(4);
 
                 let resultText;
                 let wonLostAmount;
 
                 if (win) {
-                    const wonAmount = betAmountEther * 1.9;
+                    const wonAmount = parseFloat(betAmountEther * 1.9).toFixed(4);
                     resultText = "Won";
                     wonLostAmount = wonAmount;
                     document.getElementById('status').innerText = `You won! Amount: ${wonAmount} $OVER`;
@@ -355,7 +409,7 @@
 
                 // Update balance and total wins/losses after the transaction
                 const newBalance = await web3.eth.getBalance(userAccount);
-                const newBalanceInEther = web3.utils.fromWei(newBalance, "ether");
+                const newBalanceInEther = parseFloat(web3.utils.fromWei(newBalance, "ether")).toFixed(4);
                 document.getElementById('userBalance').innerText = `Balance: ${newBalanceInEther} OVER`;
 
                 updateTotalWinsLosses();
@@ -408,7 +462,15 @@
                 }
             });
 
-            document.getElementById('totalWinsLosses').innerText = `Total Wins: ${totalWins} OVER | Total Losses: ${totalLosses} OVER`;
+            totalWins = totalWins.toFixed(4);
+            totalLosses = totalLosses.toFixed(4);
+            const netProfit = (totalWins - totalLosses).toFixed(4);
+
+            document.getElementById('totalWinsLosses').innerHTML = `
+                <div>Total Wins: ${totalWins} OVER</div>
+                <div>Total Losses: ${totalLosses} OVER</div>
+                <div class="${netProfit >= 0 ? 'profit' : 'loss'}">Net Profit: ${netProfit} OVER</div>
+            `;
         }
 
         function triggerSadFaceEmojis() {

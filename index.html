@@ -164,19 +164,70 @@
             }
         }
 
-        document.getElementById('connectButton').addEventListener('click', async () => {
-            web3 = new Web3(Web3.givenProvider || "http://localhost:8545");
+       document.getElementById('connectButton').addEventListener('click', async () => {
+    web3 = new Web3(Web3.givenProvider || "http://localhost:8545");
 
-            try {
-                const response = await fetch('coinflip.json');
-                contractABI = await response.json();
-                contract = new web3.eth.Contract(contractABI, contractAddress);
-                await checkNetworkAndConnect();
-            } catch (error) {
-                console.error("Error loading the ABI or initializing the contract:", error);
-                document.getElementById('status').innerText = "Failed to load contract.";
+    try {
+        const response = await fetch('coinflip.json');
+        contractABI = await response.json();
+        contract = new web3.eth.Contract(contractABI, contractAddress);
+
+        // Check if user is on the Over Dolphin network
+        await checkNetworkAndConnect();
+    } catch (error) {
+        console.error("Error loading the ABI or initializing the contract:", error);
+        document.getElementById('status').innerText = "Failed to load contract.";
+    }
+});
+
+async function checkNetworkAndConnect() {
+    if (typeof window.ethereum !== 'undefined') {
+        try {
+            const networkId = await web3.eth.getChainId();
+            if (networkId !== 541764) { // 541764 is the Over Dolphin network ID
+                await switchToOverDolphinNetwork();
             }
+
+            const accounts = await ethereum.request({ method: 'eth_requestAccounts' });
+            userAccount = accounts[0];
+            document.getElementById('walletAddress').innerText = `Connected: ${userAccount}`;
+            document.getElementById('flipButton').disabled = false;
+
+            // Fetch and display the user's balance
+            const balance = await web3.eth.getBalance(userAccount);
+            const balanceInEther = web3.utils.fromWei(balance, "ether");
+            document.getElementById('userBalance').innerText = `Balance: ${balanceInEther} OVER`;
+
+        } catch (error) {
+            console.error("User rejected the request or failed to switch network:", error);
+        }
+    } else {
+        alert("MetaMask is not installed. Please install it to use this DApp!");
+    }
+}
+
+async function switchToOverDolphinNetwork() {
+    try {
+        await ethereum.request({
+            method: 'wallet_switchEthereumChain',
+            params: [{ chainId: OVER_DOLPHIN_NETWORK_PARAMS.chainId }]
         });
+    } catch (switchError) {
+        if (switchError.code === 4902) {
+            // The network is not added to MetaMask
+            try {
+                await ethereum.request({
+                    method: 'wallet_addEthereumChain',
+                    params: [OVER_DOLPHIN_NETWORK_PARAMS]
+                });
+            } catch (addError) {
+                console.error('Failed to add Over Dolphin network:', addError);
+            }
+        } else {
+            console.error('Failed to switch to Over Dolphin network:', switchError);
+        }
+    }
+}
 
         document.getElementById('flipButton').addEventListener('click', async () => {
             if (!contract) {

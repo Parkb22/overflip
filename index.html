@@ -7,7 +7,7 @@
     <style>
         body {
             font-family: 'Arial', sans-serif;
-            background-color: #ffffff;
+            background-color: #1a1a1a;
             margin: 0;
             padding: 0;
             display: flex;
@@ -15,21 +15,31 @@
             align-items: center;
             justify-content: center;
             height: 100vh;
+            color: #fff;
         }
 
         .container {
             width: 80%;
             max-width: 600px;
             padding: 20px;
-            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+            box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.5);
             border-radius: 10px;
-            background-color: #f9f9f9;
+            background-color: #2c2c2c;
             margin-top: 20px;
             text-align: center;
+            animation: fadeIn 1s ease-in-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
         }
 
         h1 {
-            color: #333;
+            color: #ffcc00;
+            font-size: 2.5em;
+            margin-bottom: 20px;
+            text-shadow: 0 0 10px #ffcc00;
         }
 
         .section {
@@ -46,11 +56,20 @@
             border-radius: 5px;
             margin: 10px;
             transition: background-color 0.3s, transform 0.3s;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
         }
 
         button:hover {
             background-color: #0056b3;
             transform: scale(1.05);
+        }
+
+        #connectButton {
+            background-color: #f6851b;
+        }
+
+        #connectButton:hover {
+            background-color: #e2761b;
         }
 
         input {
@@ -60,6 +79,9 @@
             border: 1px solid #ccc;
             border-radius: 5px;
             width: calc(100% - 22px);
+            max-width: 300px;
+            background-color: #333;
+            color: #fff;
         }
 
         table {
@@ -69,7 +91,7 @@
         }
 
         table, th, td {
-            border: 1px solid #ddd;
+            border: 1px solid #555;
         }
 
         th, td {
@@ -96,7 +118,8 @@
         .message {
             font-size: 1.2em;
             font-weight: bold;
-            color: #333;
+            color: #ffcc00;
+            margin-top: 20px;
         }
 
         .win {
@@ -120,7 +143,7 @@
         </div>
 
         <div class="section">
-            <input type="text" id="betAmount" placeholder="Enter amount of $OVER to bet">
+            <input type="number" id="betAmount" placeholder="Enter amount of $OVER to bet (Max 10)">
             <button id="flipButton" disabled>Flip Coin</button>
         </div>
 
@@ -153,6 +176,7 @@
         let web3;
         let contract;
         let userAccount;
+        let betHistory = JSON.parse(localStorage.getItem('betHistory')) || [];
 
         const OVER_DOLPHIN_NETWORK_PARAMS = {
             chainId: '0x84554c', // Chain ID 541764 in hexadecimal
@@ -206,6 +230,9 @@
                     const balanceInEther = web3.utils.fromWei(balance, "ether");
                     document.getElementById('userBalance').innerText = `Balance: ${balanceInEther} OVER`;
 
+                    // Restore the betting history
+                    restoreBetHistory();
+
                 } catch (error) {
                     console.error("User rejected the request or failed to switch network:", error);
                     alert("Failed to connect to the Over Dolphin network.");
@@ -239,7 +266,11 @@
             }
 
             const betAmountInput = document.getElementById('betAmount').value;
-            const betAmount = web3.utils.toWei(betAmountInput, "ether"); // Assuming $OVER is pegged to ETH
+            if (betAmountInput > 10) {
+                alert("The maximum bet amount is 10 $OVER.");
+                return;
+            }
+            const betAmount = web3.utils.toWei(betAmountInput, "ether");
 
             document.getElementById('status').innerText = "Flipping the coin...";
 
@@ -288,7 +319,7 @@
                     document.getElementById('status').classList.add('lose');
                 }
 
-                // Add the result to the history table
+                // Add the result to the history table and save to localStorage
                 addBetToHistory(betAmountEther, resultText, wonLostAmount);
 
                 // Update balance after the transaction
@@ -304,16 +335,29 @@
         });
 
         function addBetToHistory(betAmount, result, wonLostAmount) {
+            betHistory.push({ betAmount, result, wonLostAmount });
+            localStorage.setItem('betHistory', JSON.stringify(betHistory));
+            updateBetHistoryTable();
+        }
+
+        function updateBetHistoryTable() {
             const tableBody = document.getElementById('historyTable').getElementsByTagName('tbody')[0];
-            const newRow = tableBody.insertRow();
+            tableBody.innerHTML = "";
+            betHistory.forEach((bet) => {
+                const newRow = tableBody.insertRow();
 
-            const betCell = newRow.insertCell(0);
-            const resultCell = newRow.insertCell(1);
-            const amountCell = newRow.insertCell(2);
+                const betCell = newRow.insertCell(0);
+                const resultCell = newRow.insertCell(1);
+                const amountCell = newRow.insertCell(2);
 
-            betCell.innerText = `${betAmount} $OVER`;
-            resultCell.innerText = result;
-            amountCell.innerText = `${wonLostAmount} $OVER`;
+                betCell.innerText = `${bet.betAmount} $OVER`;
+                resultCell.innerText = bet.result;
+                amountCell.innerText = `${bet.wonLostAmount} $OVER`;
+            });
+        }
+
+        function restoreBetHistory() {
+            updateBetHistoryTable();
         }
     </script>
 </body>

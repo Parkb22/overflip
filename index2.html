@@ -5,18 +5,17 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>OverFlip.Fun</title>
     <style>
-        body {
-            font-family: 'Arial', sans-serif;
+        html, body {
+            height: 100%; /* Ensure the body takes the full height of the screen */
             margin: 0;
             padding: 0;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            min-height: 100vh;
+            font-family: 'Arial', sans-serif;
             color: #fff;
             background: #000;
             background-size: cover;
-            overflow: hidden;
+            overflow-y: auto; /* Allow vertical scrolling */
+            overflow-x: hidden; /* Prevent horizontal scrolling */
+            display: block; /* Ensure the content stacks vertically */
         }
 
         .container {
@@ -29,6 +28,7 @@
             text-align: center;
             animation: fadeIn 1s ease-in-out;
             position: relative;
+            margin: 20px auto; /* Center the container with auto margins */
         }
 
         @keyframes fadeIn {
@@ -50,6 +50,26 @@
             text-shadow: 0 0 40px #ffcc00;
         }
 
+        .marquee {
+            margin-top: 10px;
+            font-size: 1.5em;
+            color: #ffcc00;
+            text-shadow: 0 0 10px #ffcc00;
+            overflow: hidden;
+            white-space: nowrap;
+        }
+
+        .marquee span {
+            display: inline-block;
+            padding-left: 100%;
+            animation: marquee 10s linear infinite;
+        }
+
+        @keyframes marquee {
+            from { transform: translateX(100%); }
+            to { transform: translateX(-100%); }
+        }
+
         .section {
             margin: 20px 0;
         }
@@ -57,7 +77,9 @@
         .jackpot-container {
             margin-bottom: 20px;
             padding: 30px;
-            background-color: #222;
+            background-image: url('https://www.link-to-your-image.com/background.jpg'); /* Replace with your image link */
+            background-size: cover;
+            background-position: center;
             border-radius: 15px;
             box-shadow: 0 0 30px #00ffcc;
         }
@@ -124,7 +146,7 @@
             background: #333;
             outline: none;
             opacity: 0.9;
-            transition: opacity .2s;
+            transition: opacity .2s, background-color 0.5s, transform 0.2s;
             border-radius: 10px;
             margin: 20px 0;
         }
@@ -201,6 +223,18 @@
 
         .flip {
             transform: rotateY(3600deg);
+        }
+
+        .crazy-effect {
+            animation: crazy 0.5s linear infinite;
+        }
+
+        @keyframes crazy {
+            0% { transform: rotate(0deg) scale(1); }
+            25% { transform: rotate(15deg) scale(1.1); }
+            50% { transform: rotate(-15deg) scale(1.1); }
+            75% { transform: rotate(10deg) scale(1.1); }
+            100% { transform: rotate(-10deg) scale(1); }
         }
 
         .message {
@@ -350,8 +384,9 @@
             <div class="jackpot-info">1% Chance on each flip to win the Jackpot! <span class="tooltip">ℹ<span class="tooltiptext">When you win the jackpot, 50% of the jackpot balance is sent to you instantly.</span></span></div>
         </div>
 
-        <h1 id="logo">OVERFLIP</h1><br>
-        Provably fair game, built on Over Protocol<br> FLIP & WIN<br> 50% to Double Up, 50% chance to Lose your Flip<br>
+        <h1 id="logo">OVERFLIP</h1>
+        <div class="marquee"><span>Provably fair game, built on Over Protocol FLIP & WIN 50% to Double Up, 50% chance to Lose your Flip</span></div>
+        
         <div class="section">
             <button id="connectButton">Connect to 🦊 MetaMask</button>
             <p id="walletAddress"></p>
@@ -538,10 +573,12 @@
                 // Coin flip animation
                 const coinElement = document.getElementById('coin');
                 coinElement.classList.add('flip');
+                document.querySelector('.container').classList.add('crazy-effect');
 
                 setTimeout(() => {
                     coinElement.classList.remove('flip');
-                }, 1000);
+                    document.querySelector('.container').classList.remove('crazy-effect');
+                }, 1500);
 
                 const flipEvent = receipt.events.FlipResult;
                 if (!flipEvent || !flipEvent.returnValues) {
@@ -618,6 +655,20 @@
                 document.getElementById('status').classList.add('lose');
                 document.getElementById('progressBarContainer').style.display = 'none';
             }
+        });
+
+        document.getElementById('betAmount').addEventListener('input', function () {
+            const betValue = this.value;
+            document.getElementById('totalWinsLosses').style.display = 'none';
+            const flipLabel = document.getElementById('flipLabel');
+            flipLabel.innerText = `FLIP ${betValue} OVER`;
+            flipLabel.style.display = 'block';
+            flipLabel.classList.add('flash');
+
+            // Make the slider more exciting as the bet increases
+            const excitementLevel = betValue / 10;
+            this.style.backgroundColor = `rgba(255, 204, 0, ${excitementLevel})`;
+            this.style.transform = `scale(${1 + excitementLevel * 0.1})`;
         });
 
         function flashBackground(color) {
@@ -720,16 +771,6 @@
                 updateTotalWinsLosses();
             }
         }
-
-        document.getElementById('betAmount').addEventListener('input', function () {
-            const betValue = this.value;
-            document.getElementById('totalWinsLosses').style.display = 'none';
-            const flipLabel = document.getElementById('flipLabel');
-            flipLabel.innerText = `FLIP ${betValue} OVER`;
-            flipLabel.style.display = 'block';
-            flipLabel.classList.add('flash');
-        });
-
     </script>
 </body>
 </html>

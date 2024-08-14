@@ -371,58 +371,23 @@
             color: #28a745; /* Set consistent color */
         }
 
-        .collapse-button {
-            background-color: #555;
-            border: none;
-            color: white;
-            padding: 15px 30px;
-            text-align: center;
-            cursor: pointer;
-            border-radius: 10px;
-            display: inline-block;
-            margin-bottom: 15px;
-            box-shadow: 0 0 20px #555;
-            transition: transform 0.3s;
-        }
-
-        .collapse-button:hover {
-            transform: scale(1.05);
-        }
-
-        .collapse-content {
-            display: none;
-            overflow: hidden;
-            transition: max-height 0.5s ease-out;
-        }
-
-        #progressBarContainer {
-            width: 100%;
-            background-color: #333;
-            border-radius: 10px;
-            margin: 30px 0;
-            display: none;
-        }
-
-        #progressBar {
-            width: 0%;
-            height: 15px;
-            background-color: #0ff;
-            border-radius: 10px;
-            animation: excitingProgress 2s ease infinite;
-        }
-
-        @keyframes excitingProgress {
-            0% { width: 0%; background-color: #0ff; }
-            50% { width: 75%; background-color: #ff00ff; }
-            100% { width: 100%; background-color: #0ff; }
-        }
-
         .flip-label {
-            font-size: 2em; /* Reduced font size */
+            font-size: 2em;
             font-weight: bold;
             color: #ffcc00;
             text-shadow: 0 0 20px #ffcc00;
-            display: none;
+            cursor: pointer;
+            margin: 20px auto;
+            padding: 15px;
+            border-radius: 12px;
+            background: linear-gradient(135deg, #0ff, #00f);
+            box-shadow: 0 4px 15px rgba(0, 255, 255, 0.4);
+            transition: transform 0.3s, background-color 0.3s, font-size 0.3s;
+            display: inline-block;
+        }
+
+        .flip-label:hover {
+            transform: scale(1.1);
         }
 
         .flash {
@@ -477,9 +442,7 @@
             <br>
             <input type="range" min="1" max="10" value="1" class="slider" id="betAmount">
             <br>
-            <p id="flipLabel" class="flip-label"></p>
-            <br>
-            <button id="flipButton" disabled>Flip Coin</button>
+            <p id="flipLabel" class="flip-label">FLIP 1 OVER</p>
         </div>
 
         <div id="progressBarContainer">
@@ -567,7 +530,7 @@
                     const accounts = await ethereum.request({ method: 'eth_requestAccounts' });
                     userAccount = accounts[0];
                     document.getElementById('walletAddress').innerText = userAccount;
-                    document.getElementById('flipButton').disabled = false;
+                    document.getElementById('flipLabel').classList.remove('disabled');
                     document.getElementById('connectButton').innerText = "Disconnect";
 
                     // Fetch and display the user's balance
@@ -607,7 +570,7 @@
                 document.getElementById('walletAddress').innerText = "";
                 document.getElementById('userBalance').innerText = "";
                 document.getElementById('connectButton').innerText = "Connect to 🦊 MetaMask";
-                document.getElementById('flipButton').disabled = true;
+                document.getElementById('flipLabel').classList.add('disabled');
                 return;
             }
             
@@ -626,10 +589,10 @@
             }
         });
 
-        document.getElementById('flipButton').addEventListener('click', async () => {
-            if (!contract) {
-                console.error("Contract is not initialized.");
-                document.getElementById('status').innerText = "Contract not initialized.";
+        document.getElementById('flipLabel').addEventListener('click', async () => {
+            if (!contract || document.getElementById('flipLabel').classList.contains('disabled')) {
+                console.error("Contract is not initialized or wallet not connected.");
+                document.getElementById('status').innerText = "Contract not initialized or wallet not connected.";
                 return;
             }
 
@@ -752,12 +715,10 @@
             const flipLabel = document.getElementById('flipLabel');
             flipLabel.innerText = `FLIP ${betValue} OVER`;
             flipLabel.style.display = 'block';
-            flipLabel.classList.add('flash');
 
-            // Make the slider more exciting as the bet increases
+            // Increase the size of the flip label as the bet increases
             const excitementLevel = betValue / 10;
-            this.style.backgroundColor = `rgba(255, 204, 0, ${excitementLevel})`;
-            this.style.transform = `scale(${1 + excitementLevel * 0.1})`;
+            flipLabel.style.transform = `scale(${1 + excitementLevel * 0.2})`;
         });
 
         function flashBackground(color) {

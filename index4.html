@@ -57,9 +57,9 @@
 
         .description {
             font-size: 1.2em;
-            color: #ffcc00;
+            color: #00ffcc; /* Different neon color */
             margin-bottom: 20px;
-            text-shadow: 0 0 10px #ffcc00;
+            text-shadow: 0 0 10px #00ffcc;
             display: flex;
             justify-content: center;
             align-items: center;
@@ -71,12 +71,12 @@
             cursor: pointer;
             color: #ff00ff;
             margin-left: 10px;
-            font-size: 1em;
+            font-size: 0.9em; /* Smaller font size */
         }
 
         .tooltip .tooltiptext {
             visibility: hidden;
-            width: 200px;
+            width: 150px; /* Smaller width */
             background-color: #333;
             color: #fff;
             text-align: center;
@@ -86,7 +86,7 @@
             z-index: 1;
             bottom: 125%;
             left: 50%;
-            margin-left: -100px;
+            margin-left: -75px;
             opacity: 0;
             transition: opacity 0.3s;
         }
@@ -194,7 +194,8 @@
             opacity: 0.8;
             transition: opacity .2s, box-shadow 0.3s;
             border-radius: 12px; /* Slightly more rounded */
-            margin: 10px 0;
+            margin: 10px auto; /* Center on PC */
+            display: block;
             box-shadow: 0 0 10px #ffcc00;
         }
 
@@ -261,6 +262,7 @@
             margin: 20px auto;
             transition: transform 1s ease-in-out;
             box-shadow: 0 0 20px #ffcc00;
+            display: block;
         }
 
         .flip {
@@ -306,14 +308,14 @@
         .profit {
             color: #28a745;
             text-shadow: 0 0 10px #28a745;
-            font-size: 1.5em;
+            font-size: 1.5em; /* Larger font size */
             margin-top: 10px;
         }
 
         .loss {
             color: #dc3545;
             text-shadow: 0 0 10px #dc3545;
-            font-size: 1.2em;
+            font-size: 1.2em; /* Same size as total wins */
             margin-top: 10px;
         }
 

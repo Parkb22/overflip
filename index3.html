@@ -1,54 +1,46 @@
-<!DOCTYPE html> 
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>OverFlip.Fun</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
     <style>
-        body {
-            font-family: 'Arial', sans-serif;
+        /* General Styles */
+        html, body {
+            height: 100%;
             margin: 0;
             padding: 0;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            min-height: 100vh;
+            font-family: 'Poppins', sans-serif;
             color: #fff;
-            background: linear-gradient(135deg, #1a1a1a, #333, #1a1a1a);
+            background: linear-gradient(135deg, #1a1a1a, #2a2a2a, #1a1a1a);
             background-size: 400% 400%;
-            animation: gradientAnimation 15s ease infinite;
-            overflow: auto;
+            animation: gradientBackground 15s ease infinite;
+            overflow-x: hidden;
+            overflow-y: auto;
         }
-     
-        @keyframes colorFlash {
-    0% { color: #ffcc00; }  /* Yellow */
-    25% { color: #ff00ff; } /* Magenta */
-    50% { color: #00ffcc; } /* Cyan */
-    75% { color: #ff6600; } /* Orange */
-    100% { color: #ffcc00; } /* Back to Yellow */
-}
 
-.rapid-flash {
-    animation: colorFlash 0.5s infinite; /* Flashes rapidly */
-}
-        @keyframes gradientAnimation {
+        @keyframes gradientBackground {
             0% { background-position: 0% 50%; }
             50% { background-position: 100% 50%; }
             100% { background-position: 0% 50%; }
         }
 
+        /* Container */
         .container {
-            width: 80%;
-            max-width: 600px;
+            width: 95%;
+            max-width: 700px;
             padding: 20px;
-            box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.5);
-            border-radius: 10px;
-            background-color: #2c2c2c;
-            margin-top: 20px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 30px;
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.18);
             text-align: center;
             animation: fadeIn 1s ease-in-out;
-            position: relative;
-            overflow: hidden;
+            margin: 20px auto;
+            box-sizing: border-box;
         }
 
         @keyframes fadeIn {
@@ -56,90 +48,89 @@
             to { opacity: 1; }
         }
 
-        h1 {
-            color: #ffcc00;
+        /* Background */
+        .animated-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle, rgba(63,94,251,1) 0%, rgba(252,70,107,1) 100%);
+            animation: bgAnimation 20s linear infinite alternate;
+            z-index: -2;
+            opacity: 0.3;
+        }
+
+        @keyframes bgAnimation {
+            0% { background-position: 0% 50%; }
+            100% { background-position: 100% 50%; }
+        }
+
+        /* Floating Emojis */
+        .floating-emoji {
+            position: fixed;
             font-size: 2.5em;
-            margin-bottom: 20px;
-            text-shadow: 0 0 10px #ffcc00;
-            cursor: pointer;
-            transition: transform 0.5s;
+            pointer-events: none;
+            animation: bounce 5s ease-in-out infinite;
+            z-index: -1;
         }
 
-        .rotate {
-            animation: rotateLogo 1s ease-in-out forwards;
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-30px); }
         }
 
-        @keyframes rotateLogo {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-
-        .section {
-            margin: 20px 0;
-        }
-
+        /* Jackpot Section */
         .jackpot-container {
-            margin-bottom: 20px;
+            background: linear-gradient(135deg, #ffcc00, #ff9900);
+            border-radius: 20px;
             padding: 20px;
-            background-color: #222;
-            border-radius: 10px;
-            box-shadow: 0 0 10px #00ffcc;
-            text-align: center;
+            margin-bottom: 20px;
+            box-shadow: 0 10px 30px rgba(255, 153, 0, 0.6);
             position: relative;
+            box-sizing: border-box;
         }
 
         .jackpot-title {
-            font-size: 1.5em;
-            color: #ff00ff;
-            text-shadow: 0 0 10px #ff00ff;
+            font-size: 1.8em;
+            color: #fff;
+            text-shadow: 0 0 10px #ff6600;
+            position: relative;
+            display: inline-block;
+            margin: 0;
         }
 
         .jackpot-amount {
-            font-size: 2em;
-            color: #00ffcc;
-            text-shadow: 0 0 10px #00ffcc;
+            font-size: 2.5em;
+            color: #ffffff;
+            text-shadow: 0 0 10px #ff6600;
             margin-top: 10px;
         }
 
-        .jackpot-info {
-            font-size: 1em;
-            color: #ffcc00;
-            margin-top: 10px;
-        }
-
+        /* Tooltip */
         .tooltip {
             position: relative;
             display: inline-block;
             cursor: pointer;
-            color: #ff00ff;
+            margin-left: 5px;
         }
 
         .tooltip .tooltiptext {
             visibility: hidden;
-            width: 200px;
+            width: 180px;
             background-color: #333;
             color: #fff;
             text-align: center;
             border-radius: 5px;
-            padding: 5px;
+            padding: 8px;
             position: absolute;
             z-index: 1;
-            bottom: 125%; /* Position above the tooltip */
+            top: 120%;
             left: 50%;
-            margin-left: -100px;
+            transform: translateX(-50%);
             opacity: 0;
             transition: opacity 0.3s;
-        }
-
-        .tooltip .tooltiptext::after {
-            content: "";
-            position: absolute;
-            top: 100%;
-            left: 50%;
-            margin-left: -5px;
-            border-width: 5px;
-            border-style: solid;
-            border-color: #333 transparent transparent transparent;
+            font-size: 0.75em;
         }
 
         .tooltip:hover .tooltiptext {
@@ -147,91 +138,132 @@
             opacity: 1;
         }
 
+        .tooltip-icon {
+            font-size: 1.2em;
+            vertical-align: middle;
+        }
+
+        /* Headings */
+        h1 {
+            color: #ffcc00;
+            font-size: 2.5em;
+            margin-bottom: 20px;
+            text-shadow: 0 0 20px #ffcc00;
+            cursor: pointer;
+            transition: transform 0.5s, text-shadow 0.5s;
+        }
+
+        h1:hover {
+            transform: scale(1.1);
+            text-shadow: 0 0 40px #ffcc00;
+        }
+
+        .center-text {
+            margin-top: 10px;
+            font-size: 0.9em;
+            color: #ffffff;
+            text-shadow: 0 0 10px #ffffff;
+            max-width: 90%;
+            margin-left: auto;
+            margin-right: auto;
+            line-height: 1.5em;
+            position: relative;
+            display: inline-block;
+        }
+
         button {
-            padding: 10px 20px;
+            padding: 15px 30px;
             font-size: 16px;
             cursor: pointer;
-            background-color: #0ff;
-            color: #0d0d0d;
+            background: linear-gradient(135deg, #0ff, #00f);
+            color: #fff;
             border: none;
-            border-radius: 5px;
-            margin: 10px;
-            transition: background-color 0.3s, transform 0.3s, box-shadow 0.3s;
-            box-shadow: 0 0 10px #0ff;
+            border-radius: 12px;
+            margin: 15px;
+            transition: background 0.3s, transform 0.3s, box-shadow 0.3s;
+            box-shadow: 0 4px 15px rgba(0, 255, 255, 0.4);
         }
 
         button:hover {
-            background-color: #ff00ff;
-            box-shadow: 0 0 20px #ff00ff;
+            background: linear-gradient(135deg, #00f, #0ff);
+            box-shadow: 0 8px 30px rgba(0, 255, 255, 0.6);
             transform: scale(1.05);
         }
 
         button:active {
             transform: scale(0.95);
-            box-shadow: 0 0 15px #0ff;
+            box-shadow: 0 4px 20px rgba(0, 255, 255, 0.4);
         }
 
         #connectButton {
-            background-color: #f6851b;
-            box-shadow: 0 0 10px #f6851b;
+            background: linear-gradient(135deg, #f6851b, #f6501b);
+            box-shadow: 0 4px 15px rgba(246, 129, 27, 0.4);
         }
 
         #connectButton:hover {
-            background-color: #e2761b;
-            box-shadow: 0 0 20px #e2761b;
+            background: linear-gradient(135deg, #f6501b, #f6851b);
+            box-shadow: 0 8px 30px rgba(246, 129, 27, 0.6);
         }
 
         input, .slider {
-            -webkit-appearance: none;
             appearance: none;
-            width: calc(100% - 22px);
-            max-width: 300px;
-            height: 15px;
+            width: 100%;
+            height: 20px;
             background: #333;
             outline: none;
-            opacity: 0.7;
-            transition: opacity .2s;
-            border-radius: 5px;
-            margin: 10px 0;
+            opacity: 0.9;
+            transition: opacity .2s, background-color 0.5s, transform 0.2s;
+            border-radius: 10px;
+            margin: 20px 0;
+            box-shadow: inset 4px 4px 10px rgba(0, 0, 0, 0.6), inset -4px -4px 10px rgba(255, 255, 255, 0.2);
+            max-width: 100%; /* Prevent overflow */
         }
 
         .slider::-webkit-slider-thumb {
-            -webkit-appearance: none;
             appearance: none;
-            width: 25px;
-            height: 25px;
+            width: 30px;
+            height: 30px;
             background: #ffcc00;
             cursor: pointer;
             border-radius: 50%;
+            box-shadow: 0 0 10px #ffcc00;
         }
 
         .slider::-moz-range-thumb {
-            width: 25px;
-            height: 25px;
+            width: 30px;
+            height: 30px;
             background: #ffcc00;
             cursor: pointer;
             border-radius: 50%;
+            box-shadow: 0 0 10px #ffcc00;
         }
 
         table {
             width: 100%;
             border-collapse: collapse;
-            margin-top: 20px;
-        }
-
-        table, th, td {
-            border: 1px solid #555;
+            margin-top: 30px;
+            background-color: #333;
+            border-radius: 15px;
+            overflow: hidden;
+            font-size: 0.85em; /* Reduce font size */
         }
 
         th, td {
             padding: 10px;
             text-align: center;
+            border: 1px solid #555;
+            word-wrap: break-word; /* Ensure words don't overflow */
         }
 
         th {
-            background-color: #333;
+            background-color: #444;
             color: #00ffcc;
             text-shadow: 0 0 10px #00ffcc;
+        }
+
+        td {
+            color: #fff;
+            background-color: #2b2b2b;
         }
 
         td a {
@@ -253,132 +285,143 @@
         }
 
         #coin {
-            width: 100px;
-            height: 100px;
-            margin: 20px auto;
+            width: 120px;
+            height: 120px;
+            margin: 30px auto;
             transition: transform 1s ease-in-out;
         }
 
         .flip {
-            transform: rotateY(1800deg);
+            transform: rotateY(3600deg);
+        }
+
+        .slow-spin {
+            animation: slowSpin 5s linear infinite;
+        }
+
+        @keyframes slowSpin {
+            from { transform: rotateY(0deg); }
+            to { transform: rotateY(360deg); }
+        }
+
+        .crazy-effect {
+            animation: crazy 0.5s linear infinite;
+        }
+
+        @keyframes crazy {
+            0% { transform: rotate(0deg) scale(1); }
+            25% { transform: rotate(15deg) scale(1.1); }
+            50% { transform: rotate(-15deg) scale(1.1); }
+            75% { transform: rotate(10deg) scale(1.1); }
+            100% { transform: rotate(-10deg) scale(1); }
         }
 
         .message {
-            font-size: 1.2em;
+            font-size: 1em; /* Smaller font */
             font-weight: bold;
             color: #ffcc00;
-            margin-top: 20px;
+            margin-top: 30px;
+            transition: transform 0.5s ease-in-out;
         }
 
         .win {
             color: #28a745;
+            text-shadow: 0 0 20px #28a745;
+            animation: popout 1s ease-in-out;
         }
 
         .lose {
             color: #dc3545;
+            text-shadow: 0 0 20px #dc3545;
+        }
+
+        @keyframes popout {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.3); }
+            100% { transform: scale(1); }
+        }
+
+        #walletAddress {
+            font-size: 0.8em;
+            color: #00ffcc;
+            text-shadow: 0 0 10px #00ffcc;
+            word-break: break-all;
+            margin-top: 10px;
         }
 
         #userBalance {
             font-size: 1.5em;
             font-weight: bold;
             color: #00ffcc;
-            text-shadow: 0 0 10px #00ffcc;
+            text-shadow: 0 0 20px #00ffcc;
         }
 
         #totalWinsLosses {
-            margin-top: 10px;
-            font-size: 1.2em;
+            margin-top: 20px;
+            font-size: 1em;
             color: #ffcc00;
+            overflow: hidden;
+            max-height: 70px; /* Limit the height */
         }
 
-        .profit {
-            color: #28a745;
-            text-shadow: 0 0 10px #28a745;
-            font-size: 1.5em;
-            margin-top: 10px;
-        }
-
-        .loss {
-            color: #dc3545;
-            text-shadow: 0 0 10px #dc3545;
-            font-size: 0.9em; /* Smaller font for Total Losses */
-            margin-top: 10px;
-        }
-
-        .floating-emoji {
-            position: absolute;
-            font-size: 2em;
-            pointer-events: none;
-            animation: floatEmoji 5s ease-in-out infinite;
-        }
-
-        @keyframes floatEmoji {
-            0% { transform: translateY(0) translateX(0) rotate(0deg); opacity: 1; }
-            100% { transform: translateY(-100px) translateX(50px) rotate(360deg); opacity: 0; }
-        }
-
-        .animated-bg {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: radial-gradient(circle, rgba(63,94,251,1) 0%, rgba(252,70,107,1) 100%);
-            animation: bgAnimation 20s linear infinite alternate;
-            z-index: -1;
-            opacity: 0.5;
-        }
-
-        @keyframes bgAnimation {
-            0% { background-position: 0% 50%; }
-            100% { background-position: 100% 50%; }
+        .profit, .loss {
+            font-size: 1em; /* Same size for both to prevent jumpy layout */
+            text-shadow: 0 0 20px #28a745;
+            margin-top: 20px;
+            color: #28a745; /* Set consistent color */
         }
 
         .collapse-button {
             background-color: #555;
             border: none;
             color: white;
-            padding: 10px 20px;
+            padding: 15px 30px;
             text-align: center;
             cursor: pointer;
-            border-radius: 5px;
+            border-radius: 10px;
             display: inline-block;
-            margin-bottom: 10px;
-            box-shadow: 0 0 10px #555;
+            margin-bottom: 15px;
+            box-shadow: 0 0 20px #555;
+            transition: transform 0.3s;
+        }
+
+        .collapse-button:hover {
+            transform: scale(1.05);
         }
 
         .collapse-content {
             display: none;
             overflow: hidden;
-            transition: max-height 0.2s ease-out;
+            transition: max-height 0.5s ease-out;
         }
 
         #progressBarContainer {
             width: 100%;
             background-color: #333;
-            border-radius: 5px;
-            margin: 20px 0;
+            border-radius: 10px;
+            margin: 30px 0;
             display: none;
         }
 
         #progressBar {
             width: 0%;
-            height: 10px;
+            height: 15px;
             background-color: #0ff;
-            border-radius: 5px;
-            animation: progress 2s linear infinite;
+            border-radius: 10px;
+            animation: excitingProgress 2s ease infinite;
         }
 
-        @keyframes progress {
-            0% { width: 0%; }
-            100% { width: 100%; }
+        @keyframes excitingProgress {
+            0% { width: 0%; background-color: #0ff; }
+            50% { width: 75%; background-color: #ff00ff; }
+            100% { width: 100%; background-color: #0ff; }
         }
 
         .flip-label {
-            font-size: 2em;
+            font-size: 2em; /* Reduced font size */
             font-weight: bold;
             color: #ffcc00;
-            text-shadow: 0 0 10px #ffcc00;
+            text-shadow: 0 0 20px #ffcc00;
             display: none;
         }
 
@@ -392,57 +435,117 @@
             100% { opacity: 1; }
         }
 
-        .rotate-flipping {
-            animation: rotateFlipping 1s linear infinite;
+        /* Degen Mode Toggle Switch */
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 60px;
+            height: 34px;
+            margin-right: 10px;
+            vertical-align: middle;
         }
 
-        @keyframes rotateFlipping {
-            from { transform: rotate(0deg); }
-            to { transform: rotate(360deg); }
+        .switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
         }
 
-        .floating-question-mark {
+        .slider.round {
+            border-radius: 34px;
+            background-color: #ccc;
+            transition: 0.4s;
+        }
+
+        .slider.round:before {
+            border-radius: 50%;
             position: absolute;
-            font-size: 2em;
-            pointer-events: none;
-            animation: floatQuestionMark 2s ease-in-out infinite;
+            content: "";
+            height: 26px;
+            width: 26px;
+            left: 4px;
+            bottom: 4px;
+            background-color: white;
+            transition: 0.4s;
         }
 
-        @keyframes floatQuestionMark {
-            0% { transform: translateY(0) translateX(0) rotate(0deg); opacity: 1; }
-            100% { transform: translateY(-100px) translateX(50px) rotate(360deg); opacity: 0; }
+        input:checked + .slider {
+            background-color: #ff6600;
+        }
+
+        input:checked + .slider:before {
+            transform: translateX(26px);
+        }
+
+        /* Rounded switch */
+        .slider.round {
+            border-radius: 34px;
+        }
+
+        .slider.round:before {
+            border-radius: 50%;
+        }
+
+        .degen-mode-label {
+            font-size: 1.2em;
+            color: #ffcc00;
+            text-shadow: 0 0 20px #ffcc00;
+            vertical-align: middle;
         }
     </style>
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.4.0/dist/confetti.browser.min.js"></script>
 </head>
 <body>
     <div class="animated-bg"></div>
+    <div class="floating-emoji" style="top: 10%; left: 5%;">🎉</div>
+    <div class="floating-emoji" style="top: 20%; right: 10%;">💰</div>
+    <div class="floating-emoji" style="bottom: 15%; left: 15%;">✨</div>
+    <div class="floating-emoji" style="bottom: 10%; right: 5%;">🔥</div>
+
     <div class="container">
         <div class="jackpot-container">
-            <div class="jackpot-title">Current Jackpot</div>
+            <div class="jackpot-title">
+                Current Jackpot
+                <span class="tooltip">
+                    <span class="tooltip-icon">ℹ️</span>
+                    <span class="tooltiptext">When you win the jackpot, 50% of the jackpot balance is sent to you instantly.</span>
+                </span>
+            </div>
             <div id="jackpotAmount" class="jackpot-amount">Loading...</div>
-            <div class="jackpot-info">1% Chance on each flip to win the Jackpot! <span class="tooltip">ℹ<span class="tooltiptext">When you win the jackpot, 50% of the jackpot balance is sent to you instantly.</span></span></div>
         </div>
 
-        <h1 id="logo">OVERFLIP</h1><br>
-        Provably fair FLIP & WIN game, built on Over Protocol<br>
-50% chance to Double Up, 50% chance to Lose your Flip<br><br>
-Each flip adds to the jackpot. 1% Chance to win on each flip!<br>
+        <h1 id="logo">OVERFLIP</h1>
+        <div class="center-text">Provably fair game, built on Over Protocol<br>FLIP & WIN - 50% to Double Up, 50% chance to Lose your Flip
+            <span class="tooltip">
+                <span class="tooltip-icon">ℹ️</span>
+                <span class="tooltiptext">The outcome is based on a random number generated by a smart contract. Each flip is independent, and the odds are always 50/50.</span>
+            </span>
+        </div>
+        
         <div class="section">
             <button id="connectButton">Connect to 🦊 MetaMask</button>
             <p id="walletAddress"></p>
-            <br>
             <p id="userBalance"></p>
             <br>
             <p id="totalWinsLosses"></p>
         </div>
 
         <div class="section">
+            <div class="degen-mode-container">
+                <label class="switch">
+                    <input type="checkbox" id="degenModeToggle">
+                    <span class="slider round"></span>
+                </label>
+                <span class="degen-mode-label">Activate Degen Mode</span>
+            </div>
+            <br>
+            <img id="coin" class="slow-spin" src="https://s2.coinmarketcap.com/static/img/coins/200x200/29407.png" alt="Coin">
+            <br>
             <input type="range" min="1" max="10" value="1" class="slider" id="betAmount">
             <br>
             <p id="flipLabel" class="flip-label"></p>
             <br>
-            <button id="flipButton" disabled>FLIP IT</button>
+            <button id="flipButton" disabled>Flip Coin</button>
         </div>
 
         <div id="progressBarContainer">
@@ -450,7 +553,6 @@ Each flip adds to the jackpot. 1% Chance to win on each flip!<br>
         </div>
 
         <div class="section">
-            <img id="coin" src="https://s2.coinmarketcap.com/static/img/coins/200x200/29407.png" alt="Coin">
             <p id="status" class="message"></p>
         </div>
 
@@ -530,8 +632,9 @@ Each flip adds to the jackpot. 1% Chance to win on each flip!<br>
 
                     const accounts = await ethereum.request({ method: 'eth_requestAccounts' });
                     userAccount = accounts[0];
-                    document.getElementById('walletAddress').innerText = `Connected: ${userAccount}`;
+                    document.getElementById('walletAddress').innerText = userAccount;
                     document.getElementById('flipButton').disabled = false;
+                    document.getElementById('connectButton').innerText = "Disconnect";
 
                     // Fetch and display the user's balance
                     const balance = await web3.eth.getBalance(userAccount);
@@ -565,6 +668,15 @@ Each flip adds to the jackpot. 1% Chance to win on each flip!<br>
         }
 
         document.getElementById('connectButton').addEventListener('click', async () => {
+            if (document.getElementById('connectButton').innerText === "Disconnect") {
+                // Disconnect logic here
+                document.getElementById('walletAddress').innerText = "";
+                document.getElementById('userBalance').innerText = "";
+                document.getElementById('connectButton').innerText = "Connect to 🦊 MetaMask";
+                document.getElementById('flipButton').disabled = true;
+                return;
+            }
+            
             web3 = new Web3(Web3.givenProvider || "http://localhost:8545");
 
             try {
@@ -588,18 +700,14 @@ Each flip adds to the jackpot. 1% Chance to win on each flip!<br>
             }
 
             const betAmountInput = document.getElementById('betAmount').value;
-            if (betAmountInput > 10) {
-                alert("The maximum bet amount is 10 $OVER.");
+            if (betAmountInput > 100) {
+                alert("The maximum bet amount is 100 $OVER.");
                 return;
             }
             const betAmount = web3.utils.toWei(betAmountInput, "ether");
 
-            document.getElementById('status').innerText = "NOW FLIPPING";
-            document.getElementById('flipButton').innerText = "FLIPPING";
-            document.getElementById('flipButton').classList.add('rotate-flipping');
+            document.getElementById('status').innerText = "Flipping the coin...";
             document.getElementById('progressBarContainer').style.display = 'block';
-
-            generateQuestionMarkEmojis();
 
             try {
                 const receipt = await contract.methods.flip().send({
@@ -608,8 +716,6 @@ Each flip adds to the jackpot. 1% Chance to win on each flip!<br>
                 });
 
                 document.getElementById('progressBarContainer').style.display = 'none';
-                document.getElementById('flipButton').classList.remove('rotate-flipping');
-                document.getElementById('flipButton').innerText = "Flip Coin";
 
                 // Rotate the logo after the bet
                 document.getElementById('logo').classList.add('rotate');
@@ -620,10 +726,12 @@ Each flip adds to the jackpot. 1% Chance to win on each flip!<br>
                 // Coin flip animation
                 const coinElement = document.getElementById('coin');
                 coinElement.classList.add('flip');
+                document.querySelector('.container').classList.add('crazy-effect');
 
                 setTimeout(() => {
                     coinElement.classList.remove('flip');
-                }, 1000);
+                    document.querySelector('.container').classList.remove('crazy-effect');
+                }, 1500);
 
                 const flipEvent = receipt.events.FlipResult;
                 if (!flipEvent || !flipEvent.returnValues) {
@@ -641,11 +749,12 @@ Each flip adds to the jackpot. 1% Chance to win on each flip!<br>
                     resultText = "Won";
                     wonLostAmount = wonAmount;
                     document.getElementById('status').innerText = `You won! Amount: ${wonAmount} $OVER`;
+                    document.getElementById('status').classList.remove('lose');
                     document.getElementById('status').classList.add('win');
 
                     // Trigger the confetti effect
                     confetti({
-                        particleCount: 100,
+                        particleCount: 200,
                         spread: 70,
                         origin: { y: 0.6 }
                     });
@@ -657,6 +766,7 @@ Each flip adds to the jackpot. 1% Chance to win on each flip!<br>
                     resultText = "Lost";
                     wonLostAmount = betAmountEther;
                     document.getElementById('status').innerText = `You lost! Amount: ${betAmountEther} $OVER`;
+                    document.getElementById('status').classList.remove('win');
                     document.getElementById('status').classList.add('lose');
                     triggerSadFaceEmojis();
 
@@ -699,9 +809,21 @@ Each flip adds to the jackpot. 1% Chance to win on each flip!<br>
                 document.getElementById('status').innerText = "Error occurred: " + error.message;
                 document.getElementById('status').classList.add('lose');
                 document.getElementById('progressBarContainer').style.display = 'none';
-                document.getElementById('flipButton').classList.remove('rotate-flipping');
-                document.getElementById('flipButton').innerText = "Flip Coin";
             }
+        });
+
+        document.getElementById('betAmount').addEventListener('input', function () {
+            const betValue = this.value;
+            document.getElementById('totalWinsLosses').style.display = 'none';
+            const flipLabel = document.getElementById('flipLabel');
+            flipLabel.innerText = `FLIP ${betValue} OVER`;
+            flipLabel.style.display = 'block';
+            flipLabel.classList.add('flash');
+
+            // Make the slider more exciting as the bet increases
+            const excitementLevel = betValue / 10;
+            this.style.backgroundColor = `rgba(255, 204, 0, ${excitementLevel})`;
+            this.style.transform = `scale(${1 + excitementLevel * 0.1})`;
         });
 
         function flashBackground(color) {
@@ -765,9 +887,9 @@ Each flip adds to the jackpot. 1% Chance to win on each flip!<br>
 
             document.getElementById('totalWinsLosses').innerHTML = `
                 <div style="color: #28a745;">Total Wins: ${totalWins} OVER</div>
-                <div class="loss">Total Losses: ${totalLosses} OVER</div>
+                <div class="loss" style="color: #dc3545;">Total Losses: ${totalLosses} OVER</div>
                 <br>
-                <div class="${netProfit >= 0 ? 'profit' : 'loss'}">Net Profit: ${netProfit} OVER</div>
+                <div class="profit" style="color: ${netProfit >= 0 ? '#28a745' : '#dc3545'};">Net Profit: ${netProfit} OVER</div>
             `;
         }
 
@@ -805,31 +927,26 @@ Each flip adds to the jackpot. 1% Chance to win on each flip!<br>
             }
         }
 
-        function generateQuestionMarkEmojis() {
-            const container = document.querySelector('.container');
-            for (let i = 0; i < 10; i++) {
-                const emoji = document.createElement('div');
-                emoji.className = 'floating-question-mark';
-                emoji.innerText = '❓';
-                emoji.style.top = `${Math.random() * 100}%`;
-                emoji.style.left = `${Math.random() * 100}%`;
-                emoji.style.animationDuration = `${Math.random() * 2 + 3}s`;
-                container.appendChild(emoji);
-
-                setTimeout(() => {
-                    emoji.remove();
-                }, 5000);
+        document.getElementById('degenModeToggle').addEventListener('change', function () {
+            const isChecked = this.checked;
+            const betAmountSlider = document.getElementById('betAmount');
+            if (isChecked) {
+                const confirmation = confirm("WARNING DEGEN MODE IS FOR TRUE DEGENS ONLY, YOU CAN LOSE ALL YOUR OVER. AND YOU PROBABLY WILL BECAUSE GAMBLING IS BAD. ARE YOU SURE YOU WANT TO CONTINUE");
+                if (confirmation) {
+                    betAmountSlider.max = 100;
+                    betAmountSlider.min = 10;
+                    betAmountSlider.step = 10;
+                    betAmountSlider.value = 10; // Set to the minimum value
+                } else {
+                    this.checked = false; // If user cancels, uncheck the toggle
+                }
+            } else {
+                betAmountSlider.max = 10;
+                betAmountSlider.min = 1;
+                betAmountSlider.step = 1;
+                betAmountSlider.value = 1; // Reset to default value
             }
-        }
-
-document.getElementById('betAmount').addEventListener('input', function () {
-    const betValue = this.value;
-    document.getElementById('totalWinsLosses').style.display = 'none';
-    const flipLabel = document.getElementById('flipLabel');
-    flipLabel.innerText = `FLIP ${betValue} OVER`;
-    flipLabel.style.display = 'block';
-    flipLabel.classList.add('flash', 'rapid-flash'); // Add the 'rapid-flash' class here
-});
+        });
     </script>
 </body>
 </html>

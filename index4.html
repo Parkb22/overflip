@@ -49,10 +49,62 @@
         h1 {
             color: #ffcc00;
             font-size: 2.5em;
-            margin-bottom: 20px;
+            margin-bottom: 10px;
             text-shadow: 0 0 20px #ffcc00, 0 0 30px #ffcc00, 0 0 40px #ffcc00;
             cursor: pointer;
             transition: transform 0.5s;
+        }
+
+        .description {
+            font-size: 1.2em;
+            color: #ffcc00;
+            margin-bottom: 20px;
+            text-shadow: 0 0 10px #ffcc00;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .tooltip {
+            position: relative;
+            display: inline-block;
+            cursor: pointer;
+            color: #ff00ff;
+            margin-left: 10px;
+            font-size: 1em;
+        }
+
+        .tooltip .tooltiptext {
+            visibility: hidden;
+            width: 200px;
+            background-color: #333;
+            color: #fff;
+            text-align: center;
+            border-radius: 5px;
+            padding: 5px;
+            position: absolute;
+            z-index: 1;
+            bottom: 125%;
+            left: 50%;
+            margin-left: -100px;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .tooltip .tooltiptext::after {
+            content: "";
+            position: absolute;
+            top: 100%;
+            left: 50%;
+            margin-left: -5px;
+            border-width: 5px;
+            border-style: solid;
+            border-color: #333 transparent transparent transparent;
+        }
+
+        .tooltip:hover .tooltiptext {
+            visibility: visible;
+            opacity: 1;
         }
 
         .rotate {
@@ -95,46 +147,6 @@
             font-size: 1em;
             color: #ffcc00;
             margin-top: 10px;
-        }
-
-        .tooltip {
-            position: relative;
-            display: inline-block;
-            cursor: pointer;
-            color: #ff00ff;
-        }
-
-        .tooltip .tooltiptext {
-            visibility: hidden;
-            width: 200px;
-            background-color: #333;
-            color: #fff;
-            text-align: center;
-            border-radius: 5px;
-            padding: 5px;
-            position: absolute;
-            z-index: 1;
-            bottom: 125%;
-            left: 50%;
-            margin-left: -100px;
-            opacity: 0;
-            transition: opacity 0.3s;
-        }
-
-        .tooltip .tooltiptext::after {
-            content: "";
-            position: absolute;
-            top: 100%;
-            left: 50%;
-            margin-left: -5px;
-            border-width: 5px;
-            border-style: solid;
-            border-color: #333 transparent transparent transparent;
-        }
-
-        .tooltip:hover .tooltiptext {
-            visibility: visible;
-            opacity: 1;
         }
 
         button {
@@ -396,6 +408,13 @@
         </div>
 
         <h1 id="logo">OVERFLIP</h1>
+
+        <div class="description">
+            Provably fair game, 50% to double up, 50% to get nothing at all
+            <span class="tooltip">ℹ
+                <span class="tooltiptext">The outcome is random and based on the smart contract. The odds are always 50/50.</span>
+            </span>
+        </div>
 
         <div class="section">
             <img id="coin" src="https://s2.coinmarketcap.com/static/img/coins/200x200/29407.png" alt="Coin">

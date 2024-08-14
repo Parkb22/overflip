@@ -48,7 +48,7 @@
 
         h1 {
             color: #ffcc00;
-            font-size: 2.5em;
+            font-size: 3em; /* Slightly bigger */
             margin-bottom: 10px;
             text-shadow: 0 0 20px #ffcc00, 0 0 30px #ffcc00, 0 0 40px #ffcc00;
             cursor: pointer;
@@ -56,13 +56,14 @@
         }
 
         .description {
-            font-size: 1.2em;
+            font-size: 1.1em; /* Smaller font to fit in one line */
             color: #00ffcc; /* Different neon color */
             margin-bottom: 20px;
             text-shadow: 0 0 10px #00ffcc;
             display: flex;
             justify-content: center;
             align-items: center;
+            line-height: 1.4em;
         }
 
         .tooltip {
@@ -176,6 +177,7 @@
         #connectButton {
             background-color: #f6851b;
             box-shadow: 0 0 20px #f6851b;
+            margin-bottom: 15px;
         }
 
         #connectButton:hover {
@@ -260,13 +262,18 @@
             width: 120px;
             height: 120px;
             margin: 20px auto;
-            transition: transform 1s ease-in-out;
+            transition: transform 1s ease-in-out, box-shadow 2s linear;
             box-shadow: 0 0 20px #ffcc00;
             display: block;
+            animation: neonRotate 5s linear infinite;
         }
 
-        .flip {
-            transform: rotateY(1800deg);
+        @keyframes neonRotate {
+            0% { box-shadow: 0 0 20px #ffcc00; }
+            25% { box-shadow: 0 0 20px #ff00ff; }
+            50% { box-shadow: 0 0 20px #00ffcc; }
+            75% { box-shadow: 0 0 20px #28a745; }
+            100% { box-shadow: 0 0 20px #ffcc00; }
         }
 
         .message {
@@ -305,18 +312,10 @@
             color: #ffcc00;
         }
 
-        .profit {
-            color: #28a745;
-            text-shadow: 0 0 10px #28a745;
-            font-size: 1.5em; /* Larger font size */
-            margin-top: 10px;
-        }
-
-        .loss {
+        .profit, .loss {
             color: #dc3545;
-            text-shadow: 0 0 10px #dc3545;
-            font-size: 1.2em; /* Same size as total wins */
-            margin-top: 10px;
+            text-shadow: 0 0 10px #28a745;
+            font-size: 1.2em;
         }
 
         .floating-emoji {
@@ -411,14 +410,7 @@
 <body>
     <div class="animated-bg"></div>
     <div class="container">
-        <div class="jackpot-container">
-            <div class="jackpot-title">Current Jackpot</div>
-            <div id="jackpotAmount" class="jackpot-amount">Loading...</div>
-            <div class="jackpot-info">1% Chance on each flip to win the Jackpot! <span class="tooltip">ℹ<span class="tooltiptext">When you win the jackpot, 50% of the jackpot balance is sent to you instantly.</span></span></div>
-        </div>
-
         <h1 id="logo">OVERFLIP</h1>
-
         <div class="description">
             Provably fair game, 50% to double up, 50% to get nothing at all
             <span class="tooltip">ℹ
@@ -427,18 +419,24 @@
         </div>
 
         <div class="section">
-            <img id="coin" src="https://s2.coinmarketcap.com/static/img/coins/200x200/29407.png" alt="Coin">
-            <input type="range" min="1" max="10" value="1" class="slider" id="betAmount">
-            <p id="flipLabel" class="flip-label"></p>
+            <button id="connectButton">Connect to 🦊 MetaMask</button>
+            <p id="walletAddress"></p>
+            <p id="userBalance"></p>
+        </div>
+
+        <div class="jackpot-container">
+            <div class="jackpot-title">Current Jackpot</div>
+            <div id="jackpotAmount" class="jackpot-amount">Loading...</div>
+            <div class="jackpot-info">1% Chance on each flip to win the Jackpot! <span class="tooltip">ℹ<span class="tooltiptext">When you win the jackpot, 50% of the jackpot balance is sent to you instantly.</span></span></div>
         </div>
 
         <div class="section">
-            <button id="connectButton">Connect to 🦊 MetaMask</button>
-            <p id="walletAddress"></p>
+            <img id="coin" src="https://s2.coinmarketcap.com/static/img/coins/200x200/29407.png" alt="Coin">
             <br>
-            <p id="userBalance"></p>
+            <input type="range" min="1" max="10" value="1" class="slider" id="betAmount">
             <br>
-            <p id="totalWinsLosses"></p>
+            <p id="flipLabel" class="flip-label"></p>
+            <button id="flipButton" disabled>Flip OVER</button>
         </div>
 
         <div id="progressBarContainer">
@@ -446,8 +444,11 @@
         </div>
 
         <div class="section">
-            <button id="flipButton" disabled>Flip OVER</button>
             <p id="status" class="message"></p>
+        </div>
+
+        <div class="section">
+            <div id="totalWinsLosses"></div>
         </div>
 
         <div class="section">
@@ -762,9 +763,8 @@
             const netProfit = (totalWins - totalLosses).toFixed(4);
 
             document.getElementById('totalWinsLosses').innerHTML = `
-                <div style="color: #28a745;">Total Wins: ${totalWins} OVER</div>
+                <div>Total Wins: ${totalWins} OVER</div>
                 <div class="loss">Total Losses: ${totalLosses} OVER</div>
-                <br>
                 <div class="${netProfit >= 0 ? 'profit' : 'loss'}">Net Profit: ${netProfit} OVER</div>
             `;
         }

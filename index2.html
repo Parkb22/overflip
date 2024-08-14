@@ -19,6 +19,7 @@
             display: flex;
             align-items: center;
             justify-content: center;
+            overflow-x: hidden; /* No horizontal scroll */
             overflow-y: auto; /* Enable vertical scrolling */
         }
 
@@ -43,7 +44,6 @@
             animation: fadeIn 1s ease-in-out;
             position: relative;
             margin-top: 20px;
-            overflow: hidden;
         }
 
         @keyframes fadeIn {
@@ -59,7 +59,6 @@
             margin-bottom: 20px;
             box-shadow: 0 10px 30px rgba(255, 153, 0, 0.6);
             position: relative;
-            overflow: hidden;
         }
 
         .jackpot-title {
@@ -88,12 +87,12 @@
 
         .tooltip .tooltiptext {
             visibility: hidden;
-            width: 220px;
+            width: 180px; /* Reduce width */
             background-color: #333;
             color: #fff;
             text-align: center;
             border-radius: 5px;
-            padding: 10px;
+            padding: 8px;
             position: absolute;
             z-index: 1;
             top: 120%; /* Position below the tooltip icon */
@@ -101,7 +100,7 @@
             transform: translateX(-50%);
             opacity: 0;
             transition: opacity 0.3s;
-            font-size: 0.9em;
+            font-size: 0.75em; /* Reduce font size */
         }
 
         .tooltip:hover .tooltiptext {
@@ -332,9 +331,10 @@
         }
 
         .profit, .loss {
-            font-size: 1.2em; /* Same size for both to prevent jumpy layout */
+            font-size: 1em; /* Same size for both to prevent jumpy layout */
             text-shadow: 0 0 20px #28a745;
             margin-top: 20px;
+            color: #28a745; /* Set consistent color */
         }
 
         .floating-emoji {
@@ -518,7 +518,7 @@
         let userAccount;
         let betHistory = JSON.parse(localStorage.getItem('betHistory')) || [];
 
-            const OVER_DOLPHIN_NETWORK_PARAMS = {
+        const OVER_DOLPHIN_NETWORK_PARAMS = {
             chainId: '0x84554c', // Chain ID 541764 in hexadecimal
             chainName: 'Over Dolphin',
             rpcUrls: ['https://wallet-dolphin.rpc.over.network/'],
@@ -817,9 +817,9 @@
 
             document.getElementById('totalWinsLosses').innerHTML = `
                 <div style="color: #28a745;">Total Wins: ${totalWins} OVER</div>
-                <div class="loss">Total Losses: ${totalLosses} OVER</div>
+                <div class="loss" style="color: #dc3545;">Total Losses: ${totalLosses} OVER</div>
                 <br>
-                <div class="${netProfit >= 0 ? 'profit' : 'loss'}">Net Profit: ${netProfit} OVER</div>
+                <div class="profit" style="color: ${netProfit >= 0 ? '#28a745' : '#dc3545'};">Net Profit: ${netProfit} OVER</div>
             `;
         }
 

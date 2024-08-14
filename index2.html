@@ -443,6 +443,8 @@
             <input type="range" min="1" max="10" value="1" class="slider" id="betAmount">
             <br>
             <p id="flipLabel" class="flip-label">FLIP 1 OVER</p>
+            <br>
+            <button id="flipButton" disabled>Flip Coin</button>
         </div>
 
         <div id="progressBarContainer">
@@ -530,7 +532,7 @@
                     const accounts = await ethereum.request({ method: 'eth_requestAccounts' });
                     userAccount = accounts[0];
                     document.getElementById('walletAddress').innerText = userAccount;
-                    document.getElementById('flipLabel').classList.remove('disabled');
+                    document.getElementById('flipButton').disabled = false;
                     document.getElementById('connectButton').innerText = "Disconnect";
 
                     // Fetch and display the user's balance
@@ -570,7 +572,7 @@
                 document.getElementById('walletAddress').innerText = "";
                 document.getElementById('userBalance').innerText = "";
                 document.getElementById('connectButton').innerText = "Connect to 🦊 MetaMask";
-                document.getElementById('flipLabel').classList.add('disabled');
+                document.getElementById('flipButton').disabled = true;
                 return;
             }
             
@@ -589,10 +591,10 @@
             }
         });
 
-        document.getElementById('flipLabel').addEventListener('click', async () => {
-            if (!contract || document.getElementById('flipLabel').classList.contains('disabled')) {
-                console.error("Contract is not initialized or wallet not connected.");
-                document.getElementById('status').innerText = "Contract not initialized or wallet not connected.";
+        document.getElementById('flipButton').addEventListener('click', async () => {
+            if (!contract) {
+                console.error("Contract is not initialized.");
+                document.getElementById('status').innerText = "Contract not initialized.";
                 return;
             }
 
@@ -716,9 +718,10 @@
             flipLabel.innerText = `FLIP ${betValue} OVER`;
             flipLabel.style.display = 'block';
 
-            // Increase the size of the flip label as the bet increases
+            // Make the slider more exciting as the bet increases
             const excitementLevel = betValue / 10;
-            flipLabel.style.transform = `scale(${1 + excitementLevel * 0.2})`;
+            this.style.backgroundColor = `rgba(255, 204, 0, ${excitementLevel})`;
+            this.style.transform = `scale(${1 + excitementLevel * 0.1})`;
         });
 
         function flashBackground(color) {

@@ -16,10 +16,8 @@
             background: linear-gradient(135deg, #1a1a1a, #2a2a2a, #1a1a1a);
             background-size: 400% 400%;
             animation: gradientBackground 15s ease infinite;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            overflow: hidden; /* Disable scrollbars */
+            overflow-x: hidden;
+            overflow-y: auto; /* Enable vertical scrolling */
         }
 
         @keyframes gradientBackground {
@@ -30,8 +28,8 @@
 
         /* Container */
         .container {
-            width: 90%;
-            max-width: 400px; /* Set a max-width to ensure responsiveness */
+            width: 95%; /* Increase width */
+            max-width: 700px; /* Increase max width */
             padding: 20px;
             background: rgba(255, 255, 255, 0.1);
             border-radius: 30px;
@@ -41,6 +39,7 @@
             border: 1px solid rgba(255, 255, 255, 0.18);
             text-align: center;
             animation: fadeIn 1s ease-in-out;
+            margin: 20px auto; /* Center the container */
             box-sizing: border-box;
         }
 
@@ -118,7 +117,7 @@
 
         .tooltip .tooltiptext {
             visibility: hidden;
-            width: 180px; /* Reduce width */
+            width: 180px;
             background-color: #333;
             color: #fff;
             text-align: center;
@@ -126,12 +125,12 @@
             padding: 8px;
             position: absolute;
             z-index: 1;
-            top: 120%; /* Position below the tooltip icon */
+            top: 120%;
             left: 50%;
             transform: translateX(-50%);
             opacity: 0;
             transition: opacity 0.3s;
-            font-size: 0.75em; /* Reduce font size */
+            font-size: 0.75em;
         }
 
         .tooltip:hover .tooltiptext {
@@ -161,7 +160,7 @@
 
         .center-text {
             margin-top: 10px;
-            font-size: 0.9em; /* Smaller font size */
+            font-size: 0.9em;
             color: #ffffff;
             text-shadow: 0 0 10px #ffffff;
             max-width: 90%;
@@ -209,7 +208,6 @@
         input, .slider {
             appearance: none;
             width: 100%;
-            max-width: 400px;
             height: 20px;
             background: #333;
             outline: none;
@@ -263,6 +261,7 @@
         td {
             color: #fff;
             background-color: #2b2b2b;
+            word-wrap: break-word; /* Ensure words don't overflow */
         }
 
         td a {

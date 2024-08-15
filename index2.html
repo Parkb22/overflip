@@ -4,43 +4,41 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>OverFlip.Fun</title>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
     <style>
-        /* General Styles */
-        html, body {
-            height: 100%;
+        body {
+            font-family: 'Poppins', sans-serif;
             margin: 0;
             padding: 0;
-            font-family: 'Poppins', sans-serif;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
             color: #fff;
-            background: linear-gradient(135deg, #1a1a1a, #2a2a2a, #1a1a1a);
+            background: linear-gradient(135deg, #1a1a1a, #333, #1a1a1a);
             background-size: 400% 400%;
-            animation: gradientBackground 15s ease infinite;
-            overflow-x: hidden;
-            overflow-y: auto;
+            animation: gradientAnimation 15s ease infinite;
+            overflow: auto;
         }
 
-        @keyframes gradientBackground {
+        @keyframes gradientAnimation {
             0% { background-position: 0% 50%; }
             50% { background-position: 100% 50%; }
             100% { background-position: 0% 50%; }
         }
 
-        /* Container */
         .container {
-            width: 95%;
-            max-width: 700px;
+            width: 80%;
+            max-width: 600px;
             padding: 20px;
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 30px;
-            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
-            backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.18);
+            box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.5);
+            border-radius: 15px; /* Slightly more rounded */
+            background-color: #2c2c2c;
+            margin-top: 20px;
             text-align: center;
             animation: fadeIn 1s ease-in-out;
-            margin: 20px auto;
-            box-sizing: border-box;
+            position: relative;
+            overflow: hidden;
         }
 
         @keyframes fadeIn {
@@ -48,89 +46,68 @@
             to { opacity: 1; }
         }
 
-        /* Background */
-        .animated-bg {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: radial-gradient(circle, rgba(63,94,251,1) 0%, rgba(252,70,107,1) 100%);
-            animation: bgAnimation 20s linear infinite alternate;
-            z-index: -2;
-            opacity: 0.3;
+        h1 {
+            color: #ffcc00;
+            font-size: 3em; /* Slightly bigger */
+            margin-bottom: 10px;
+            text-shadow: 0 0 20px #ffcc00, 0 0 30px #ffcc00, 0 0 40px #ffcc00;
+            cursor: pointer;
+            transition: transform 0.5s;
         }
 
-        @keyframes bgAnimation {
-            0% { background-position: 0% 50%; }
-            100% { background-position: 100% 50%; }
-        }
-
-        /* Floating Emojis */
-        .floating-emoji {
-            position: fixed;
-            font-size: 2.5em;
-            pointer-events: none;
-            animation: bounce 5s ease-in-out infinite;
-            z-index: -1;
-        }
-
-        @keyframes bounce {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-30px); }
-        }
-
-        /* Jackpot Section */
-        .jackpot-container {
-            background: linear-gradient(135deg, #ffcc00, #ff9900);
-            border-radius: 20px;
-            padding: 20px;
-            margin-bottom: 20px;
-            box-shadow: 0 10px 30px rgba(255, 153, 0, 0.6);
-            position: relative;
-            box-sizing: border-box;
-        }
-
-        .jackpot-title {
-            font-size: 1.8em;
-            color: #fff;
-            text-shadow: 0 0 10px #ff6600;
-            position: relative;
-            display: inline-block;
-            margin: 0;
-        }
-
-        .jackpot-amount {
-            font-size: 2.5em;
-            color: #ffffff;
-            text-shadow: 0 0 10px #ff6600;
+        /* Added line break below OVERFLIP */
+        h1::after {
+            content: "";
+            display: block;
             margin-top: 10px;
         }
 
-        /* Tooltip */
+        .description {
+            font-size: 1.1em; /* Smaller font to fit in one line */
+            color: #00ffcc; /* Different neon color */
+            margin-bottom: 20px;
+            text-shadow: 0 0 10px #00ffcc;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            line-height: 1.4em;
+        }
+
         .tooltip {
             position: relative;
             display: inline-block;
             cursor: pointer;
-            margin-left: 5px;
+            color: #ff00ff;
+            margin-left: 10px;
+            font-size: 0.9em; /* Smaller font size */
         }
 
         .tooltip .tooltiptext {
             visibility: hidden;
-            width: 180px;
+            width: 150px; /* Smaller width */
             background-color: #333;
             color: #fff;
             text-align: center;
             border-radius: 5px;
-            padding: 8px;
+            padding: 5px;
             position: absolute;
             z-index: 1;
-            top: 120%;
+            bottom: 125%;
             left: 50%;
-            transform: translateX(-50%);
+            margin-left: -75px;
             opacity: 0;
             transition: opacity 0.3s;
-            font-size: 0.75em;
+        }
+
+        .tooltip .tooltiptext::after {
+            content: "";
+            position: absolute;
+            top: 100%;
+            left: 50%;
+            margin-left: -5px;
+            border-width: 5px;
+            border-style: solid;
+            border-color: #333 transparent transparent transparent;
         }
 
         .tooltip:hover .tooltiptext {
@@ -138,132 +115,136 @@
             opacity: 1;
         }
 
-        .tooltip-icon {
-            font-size: 1.2em;
-            vertical-align: middle;
+        .rotate {
+            animation: rotateLogo 1s ease-in-out forwards;
         }
 
-        /* Headings */
-        h1 {
-            color: #ffcc00;
-            font-size: 2.5em;
+        @keyframes rotateLogo {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .section {
+            margin: 20px 0;
+        }
+
+        .jackpot-container {
             margin-bottom: 20px;
-            text-shadow: 0 0 20px #ffcc00;
-            cursor: pointer;
-            transition: transform 0.5s, text-shadow 0.5s;
-        }
-
-        h1:hover {
-            transform: scale(1.1);
-            text-shadow: 0 0 40px #ffcc00;
-        }
-
-        .center-text {
-            margin-top: 10px;
-            font-size: 0.9em;
-            color: #ffffff;
-            text-shadow: 0 0 10px #ffffff;
-            max-width: 90%;
-            margin-left: auto;
-            margin-right: auto;
-            line-height: 1.5em;
+            padding: 20px;
+            background-color: #222;
+            border-radius: 15px; /* Slightly more rounded */
+            box-shadow: 0 0 30px #00ffcc; /* Increased neon effect */
+            text-align: center;
             position: relative;
-            display: inline-block;
+        }
+
+        .jackpot-title {
+            font-size: 1.5em;
+            color: #ff00ff;
+            text-shadow: 0 0 20px #ff00ff;
+        }
+
+        .jackpot-amount {
+            font-size: 2em;
+            color: #00ffcc;
+            text-shadow: 0 0 20px #00ffcc;
+            margin-top: 10px;
+        }
+
+        .jackpot-info {
+            font-size: 1em;
+            color: #ffcc00;
+            margin-top: 10px;
         }
 
         button {
-            padding: 15px 30px;
+            padding: 10px 20px;
             font-size: 16px;
             cursor: pointer;
-            background: linear-gradient(135deg, #0ff, #00f);
-            color: #fff;
+            background-color: #0ff;
+            color: #0d0d0d;
             border: none;
-            border-radius: 12px;
-            margin: 15px;
-            transition: background 0.3s, transform 0.3s, box-shadow 0.3s;
-            box-shadow: 0 4px 15px rgba(0, 255, 255, 0.4);
+            border-radius: 12px; /* Slightly more rounded */
+            margin: 10px;
+            transition: background-color 0.3s, transform 0.3s, box-shadow 0.3s;
+            box-shadow: 0 0 20px #0ff;
         }
 
         button:hover {
-            background: linear-gradient(135deg, #00f, #0ff);
-            box-shadow: 0 8px 30px rgba(0, 255, 255, 0.6);
+            background-color: #ff00ff;
+            box-shadow: 0 0 30px #ff00ff;
             transform: scale(1.05);
         }
 
         button:active {
             transform: scale(0.95);
-            box-shadow: 0 4px 20px rgba(0, 255, 255, 0.4);
+            box-shadow: 0 0 15px #0ff;
         }
 
         #connectButton {
-            background: linear-gradient(135deg, #f6851b, #f6501b);
-            box-shadow: 0 4px 15px rgba(246, 129, 27, 0.4);
+            background-color: #f6851b;
+            box-shadow: 0 0 20px #f6851b;
+            margin-bottom: 15px;
         }
 
         #connectButton:hover {
-            background: linear-gradient(135deg, #f6501b, #f6851b);
-            box-shadow: 0 8px 30px rgba(246, 129, 27, 0.6);
+            background-color: #e2761b;
+            box-shadow: 0 0 30px #e2761b;
         }
 
         input, .slider {
+            -webkit-appearance: none;
             appearance: none;
-            width: 100%;
-            height: 20px;
+            width: calc(100% - 22px);
+            max-width: 300px;
+            height: 15px;
             background: #333;
             outline: none;
-            opacity: 0.9;
-            transition: opacity .2s, background-color 0.5s, transform 0.2s;
-            border-radius: 10px;
-            margin: 20px 0;
-            box-shadow: inset 4px 4px 10px rgba(0, 0, 0, 0.6), inset -4px -4px 10px rgba(255, 255, 255, 0.2);
-            max-width: 100%; /* Prevent overflow */
+            opacity: 0.8;
+            transition: opacity .2s, box-shadow 0.3s;
+            border-radius: 12px; /* Slightly more rounded */
+            margin: 10px auto; /* Center on PC */
+            display: block;
+            box-shadow: 0 0 10px #ffcc00;
         }
 
         .slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
             appearance: none;
-            width: 30px;
-            height: 30px;
+            width: 25px;
+            height: 25px;
             background: #ffcc00;
             cursor: pointer;
             border-radius: 50%;
-            box-shadow: 0 0 10px #ffcc00;
         }
 
         .slider::-moz-range-thumb {
-            width: 30px;
-            height: 30px;
+            width: 25px;
+            height: 25px;
             background: #ffcc00;
             cursor: pointer;
             border-radius: 50%;
-            box-shadow: 0 0 10px #ffcc00;
         }
 
         table {
             width: 100%;
             border-collapse: collapse;
-            margin-top: 30px;
-            background-color: #333;
-            border-radius: 15px;
-            overflow: hidden;
-            font-size: 0.85em; /* Reduce font size */
+            margin-top: 20px;
+        }
+
+        table, th, td {
+            border: 1px solid #555;
         }
 
         th, td {
             padding: 10px;
             text-align: center;
-            border: 1px solid #555;
-            word-wrap: break-word; /* Ensure words don't overflow */
         }
 
         th {
-            background-color: #444;
+            background-color: #333;
             color: #00ffcc;
             text-shadow: 0 0 10px #00ffcc;
-        }
-
-        td {
-            color: #fff;
-            background-color: #2b2b2b;
         }
 
         td a {
@@ -277,73 +258,51 @@
         }
 
         .win-amount {
-            color: #28a745;
+            color: #00ffcc; /* Changed to match the theme */
         }
 
         .lose-amount {
-            color: #dc3545;
+            color: #00ffcc; /* Changed to match the theme */
         }
 
         #coin {
             width: 120px;
             height: 120px;
-            margin: 30px auto;
-            transition: transform 1s ease-in-out;
+            margin: 20px auto;
+            transition: transform 1s ease-in-out, box-shadow 2s linear;
+            box-shadow: 0 0 20px #ffcc00;
+            display: block;
+            animation: neonRotate 5s linear infinite;
+            border-radius: 50%; /* Changed to make the box round */
+            overflow: hidden; /* Ensure content stays within the rounded box */
         }
 
-        .flip {
-            transform: rotateY(3600deg);
-        }
-
-        .slow-spin {
-            animation: slowSpin 5s linear infinite;
-        }
-
-        @keyframes slowSpin {
-            from { transform: rotateY(0deg); }
-            to { transform: rotateY(360deg); }
-        }
-
-        .crazy-effect {
-            animation: crazy 0.5s linear infinite;
-        }
-
-        @keyframes crazy {
-            0% { transform: rotate(0deg) scale(1); }
-            25% { transform: rotate(15deg) scale(1.1); }
-            50% { transform: rotate(-15deg) scale(1.1); }
-            75% { transform: rotate(10deg) scale(1.1); }
-            100% { transform: rotate(-10deg) scale(1); }
+        @keyframes neonRotate {
+            0% { box-shadow: 0 0 20px #ffcc00; }
+            25% { box-shadow: 0 0 20px #ff00ff; }
+            50% { box-shadow: 0 0 20px #00ffcc; }
+            75% { box-shadow: 0 0 20px #28a745; }
+            100% { box-shadow: 0 0 20px #ffcc00; }
         }
 
         .message {
-            font-size: 1em; /* Smaller font */
+            font-size: 1.2em;
             font-weight: bold;
             color: #ffcc00;
-            margin-top: 30px;
-            transition: transform 0.5s ease-in-out;
+            margin-top: 20px;
         }
 
         .win {
             color: #28a745;
-            text-shadow: 0 0 20px #28a745;
-            animation: popout 1s ease-in-out;
         }
 
         .lose {
             color: #dc3545;
-            text-shadow: 0 0 20px #dc3545;
-        }
-
-        @keyframes popout {
-            0% { transform: scale(1); }
-            50% { transform: scale(1.3); }
-            100% { transform: scale(1); }
         }
 
         #walletAddress {
-            font-size: 0.8em;
-            color: #00ffcc;
+            font-size: 0.8em; /* Smaller font for the wallet address */
+            color: #fff; /* Changed to white */
             text-shadow: 0 0 10px #00ffcc;
             word-break: break-all;
             margin-top: 10px;
@@ -352,76 +311,96 @@
         #userBalance {
             font-size: 1.5em;
             font-weight: bold;
-            color: #00ffcc;
-            text-shadow: 0 0 20px #00ffcc;
+            color: #ff6600; /* Changed to fit the theme */
+            text-shadow: 0 0 20px #ff6600;
         }
 
         #totalWinsLosses {
-            margin-top: 20px;
-            font-size: 1em;
-            color: #ffcc00;
-            overflow: hidden;
-            max-height: 70px; /* Limit the height */
+            margin-top: 10px;
+            font-size: 1.2em;
+            color: #00ffcc; /* Unified color for all */
         }
 
         .profit, .loss {
-            font-size: 1em; /* Same size for both to prevent jumpy layout */
-            text-shadow: 0 0 20px #28a745;
-            margin-top: 20px;
-            color: #28a745; /* Set consistent color */
+            color: #00ffcc; /* Unified color */
+            text-shadow: 0 0 10px #00ffcc; /* Unified text-shadow */
+            font-size: 1.2em;
+        }
+
+        .floating-emoji {
+            position: absolute;
+            font-size: 2em;
+            pointer-events: none;
+            animation: floatEmoji 5s ease-in-out infinite;
+        }
+
+        @keyframes floatEmoji {
+            0% { transform: translateY(0) translateX(0) rotate(0deg); opacity: 1; }
+            100% { transform: translateY(-100px) translateX(50px) rotate(360deg); opacity: 0; }
+        }
+
+        .animated-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle, rgba(63,94,251,1) 0%, rgba(252,70,107,1) 100%);
+            animation: bgAnimation 20s linear infinite alternate;
+            z-index: -1;
+            opacity: 0.5;
+        }
+
+        @keyframes bgAnimation {
+            0% { background-position: 0% 50%; }
+            100% { background-position: 100% 50%; }
         }
 
         .collapse-button {
             background-color: #555;
             border: none;
             color: white;
-            padding: 15px 30px;
+            padding: 10px 20px;
             text-align: center;
             cursor: pointer;
-            border-radius: 10px;
+            border-radius: 12px; /* Slightly more rounded */
             display: inline-block;
-            margin-bottom: 15px;
-            box-shadow: 0 0 20px #555;
-            transition: transform 0.3s;
-        }
-
-        .collapse-button:hover {
-            transform: scale(1.05);
+            margin-bottom: 10px;
+            box-shadow: 0 0 10px #555;
         }
 
         .collapse-content {
             display: none;
             overflow: hidden;
-            transition: max-height 0.5s ease-out;
+            transition: max-height 0.2s ease-out;
         }
 
         #progressBarContainer {
             width: 100%;
             background-color: #333;
-            border-radius: 10px;
-            margin: 30px 0;
+            border-radius: 12px; /* Slightly more rounded */
+            margin: 20px 0;
             display: none;
         }
 
         #progressBar {
             width: 0%;
-            height: 15px;
+            height: 10px;
             background-color: #0ff;
-            border-radius: 10px;
-            animation: excitingProgress 2s ease infinite;
+            border-radius: 12px; /* Slightly more rounded */
+            animation: progress 2s linear infinite;
         }
 
-        @keyframes excitingProgress {
-            0% { width: 0%; background-color: #0ff; }
-            50% { width: 75%; background-color: #ff00ff; }
-            100% { width: 100%; background-color: #0ff; }
+        @keyframes progress {
+            0% { width: 0%; }
+            100% { width: 100%; }
         }
 
         .flip-label {
-            font-size: 2em; /* Reduced font size */
+            font-size: 2em;
             font-weight: bold;
             color: #ffcc00;
-            text-shadow: 0 0 20px #ffcc00;
+            text-shadow: 0 0 10px #ffcc00;
             display: none;
         }
 
@@ -439,47 +418,34 @@
 </head>
 <body>
     <div class="animated-bg"></div>
-    <div class="floating-emoji" style="top: 10%; left: 5%;">🎉</div>
-    <div class="floating-emoji" style="top: 20%; right: 10%;">💰</div>
-    <div class="floating-emoji" style="bottom: 15%; left: 15%;">✨</div>
-    <div class="floating-emoji" style="bottom: 10%; right: 5%;">🔥</div>
-
     <div class="container">
-        <div class="jackpot-container">
-            <div class="jackpot-title">
-                Current Jackpot
-                <span class="tooltip">
-                    <span class="tooltip-icon">ℹ️</span>
-                    <span class="tooltiptext">When you win the jackpot, 50% of the jackpot balance is sent to you instantly.</span>
-                </span>
-            </div>
-            <div id="jackpotAmount" class="jackpot-amount">Loading...</div>
-        </div>
-
         <h1 id="logo">OVERFLIP</h1>
-        <div class="center-text">Provably fair game, built on Over Protocol<br>FLIP & WIN - 50% to Double Up, 50% chance to Lose your Flip
-            <span class="tooltip">
-                <span class="tooltip-icon">ℹ️</span>
-                <span class="tooltiptext">The outcome is based on a random number generated by a smart contract. Each flip is independent, and the odds are always 50/50.</span>
+        <div class="description">
+            Provably fair game, 50% to double up, 50% to get nothing at all
+            <span class="tooltip">ℹ
+                <span class="tooltiptext">The outcome is random and based on the smart contract. The odds are always 50/50.</span>
             </span>
         </div>
-        
+
         <div class="section">
             <button id="connectButton">Connect to 🦊 MetaMask</button>
             <p id="walletAddress"></p>
             <p id="userBalance"></p>
-            <br>
-            <p id="totalWinsLosses"></p>
+        </div>
+
+        <div class="jackpot-container">
+            <div class="jackpot-title">🏆 Current Jackpot</div> <!-- Added Trophy emoji -->
+            <div id="jackpotAmount" class="jackpot-amount">Loading...</div>
+            <div class="jackpot-info">1% Chance on each flip to win the Jackpot! <span class="tooltip">ℹ<span class="tooltiptext">When you win the jackpot, 50% of the jackpot balance is sent to you instantly.</span></span></div>
         </div>
 
         <div class="section">
-            <img id="coin" class="slow-spin" src="https://s2.coinmarketcap.com/static/img/coins/200x200/29407.png" alt="Coin">
+            <img id="coin" src="https://s2.coinmarketcap.com/static/img/coins/200x200/29407.png" alt="Coin">
             <br>
             <input type="range" min="1" max="10" value="1" class="slider" id="betAmount">
             <br>
             <p id="flipLabel" class="flip-label"></p>
-            <br>
-            <button id="flipButton" disabled>Flip Coin</button>
+            <button id="flipButton" disabled>Flip OVER</button>
         </div>
 
         <div id="progressBarContainer">
@@ -491,31 +457,35 @@
         </div>
 
         <div class="section">
-            <button class="collapse-button" onclick="toggleHistory()">Toggle Game History</button>
+            <div id="totalWinsLosses"></div>
+        </div>
+
+        <div class="section">
+            <button class="collapse-button" onclick="toggleHistory()">Toggle Flip History</button>
             <div id="historyContent" class="collapse-content">
-                <h2>Betting History</h2>
+                <h2>Flip History</h2>
                 <table id="historyTable">
                     <thead>
                         <tr>
                             <th>Block Number</th>
-                            <th>Bet Amount ($OVER)</th>
+                            <th>OVER Flipped</th>
                             <th>Result</th>
                             <th>Won/Lost Amount ($OVER)</th>
                         </tr>
                     </thead>
                     <tbody>
-                        <!-- Betting history will be dynamically inserted here -->
+                        <!-- Flip history will be dynamically inserted here -->
                     </tbody>
                 </table>
-                <button onclick="clearHistory()">Clear Betting History</button>
+                <button onclick="clearHistory()">Clear Flip History</button>
             </div>
         </div>
     </div>
 
     <script src="https://cdn.jsdelivr.net/gh/ethereum/web3.js/dist/web3.min.js"></script>
     <script>
-        const contractAddress = "0x315590b6ac25baF2C8F6a74CdE77FaF0FF2De778"; // Replace with your contract address
-        const jackpotContractAddress = "0xcbee6aF6ab310025888D340ab3Fd3F7fe808E000"; // Replace with your jackpot contract address
+        const contractAddress = "0x315590b6ac25baF2C8F6a74CdE77FaF0FF2De778"; // Your contract address
+        const jackpotContractAddress = "0xcbee6aF6ab310025888D340ab3Fd3F7fe808E000"; // Your jackpot contract address
         let contractABI;
         let web3;
         let contract;
@@ -566,7 +536,7 @@
 
                     const accounts = await ethereum.request({ method: 'eth_requestAccounts' });
                     userAccount = accounts[0];
-                    document.getElementById('walletAddress').innerText = userAccount;
+                    document.getElementById('walletAddress').innerText = `Connected: ${userAccount}`;
                     document.getElementById('flipButton').disabled = false;
                     document.getElementById('connectButton').innerText = "Disconnect";
 
@@ -575,8 +545,8 @@
                     const balanceInEther = parseFloat(web3.utils.fromWei(balance, "ether")).toFixed(4);
                     document.getElementById('userBalance').innerText = `Balance: ${balanceInEther} OVER`;
 
-                    // Restore the betting history
-                    restoreBetHistory();
+                    // Restore the flip history
+                    restoreFlipHistory();
 
                     // Fetch and display the jackpot balance
                     await updateJackpotBalance();
@@ -603,7 +573,7 @@
 
         document.getElementById('connectButton').addEventListener('click', async () => {
             if (document.getElementById('connectButton').innerText === "Disconnect") {
-                // Disconnect logic here
+                // Disconnect logic
                 document.getElementById('walletAddress').innerText = "";
                 document.getElementById('userBalance').innerText = "";
                 document.getElementById('connectButton').innerText = "Connect to 🦊 MetaMask";
@@ -640,7 +610,7 @@
             }
             const betAmount = web3.utils.toWei(betAmountInput, "ether");
 
-            document.getElementById('status').innerText = "Flipping the coin...";
+            document.getElementById('status').innerText = "FLIPPING OVER...";
             document.getElementById('progressBarContainer').style.display = 'block';
 
             try {
@@ -660,12 +630,10 @@
                 // Coin flip animation
                 const coinElement = document.getElementById('coin');
                 coinElement.classList.add('flip');
-                document.querySelector('.container').classList.add('crazy-effect');
 
                 setTimeout(() => {
                     coinElement.classList.remove('flip');
-                    document.querySelector('.container').classList.remove('crazy-effect');
-                }, 1500);
+                }, 1000);
 
                 const flipEvent = receipt.events.FlipResult;
                 if (!flipEvent || !flipEvent.returnValues) {
@@ -679,16 +647,15 @@
                 let wonLostAmount;
 
                 if (win) {
-                    const wonAmount = parseFloat(betAmountEther * 1.9).toFixed(4);
+                    const wonAmount = parseFloat(betAmountEther * 2).toFixed(4);
                     resultText = "Won";
                     wonLostAmount = wonAmount;
                     document.getElementById('status').innerText = `You won! Amount: ${wonAmount} $OVER`;
-                    document.getElementById('status').classList.remove('lose');
                     document.getElementById('status').classList.add('win');
 
                     // Trigger the confetti effect
                     confetti({
-                        particleCount: 200,
+                        particleCount: 100,
                         spread: 70,
                         origin: { y: 0.6 }
                     });
@@ -700,7 +667,6 @@
                     resultText = "Lost";
                     wonLostAmount = betAmountEther;
                     document.getElementById('status').innerText = `You lost! Amount: ${betAmountEther} $OVER`;
-                    document.getElementById('status').classList.remove('win');
                     document.getElementById('status').classList.add('lose');
                     triggerSadFaceEmojis();
 
@@ -709,7 +675,7 @@
                 }
 
                 // Add the result to the history table and save to localStorage
-                addBetToHistory(receipt.blockNumber, betAmountEther, resultText, wonLostAmount, receipt.transactionHash);
+                addFlipToHistory(receipt.blockNumber, betAmountEther, resultText, wonLostAmount, receipt.transactionHash);
 
                 // Update balance and total wins/losses after the transaction
                 const newBalance = await web3.eth.getBalance(userAccount);
@@ -740,24 +706,10 @@
 
             } catch (error) {
                 console.error("Error occurred during transaction:", error);
-                document.getElementById('status').innerText = "Error occurred: " + error.message;
+                document.getElementById('status').innerText = "Error occurred while flipping: TX Failed. Please try again."; // Simplified error message
                 document.getElementById('status').classList.add('lose');
                 document.getElementById('progressBarContainer').style.display = 'none';
             }
-        });
-
-        document.getElementById('betAmount').addEventListener('input', function () {
-            const betValue = this.value;
-            document.getElementById('totalWinsLosses').style.display = 'none';
-            const flipLabel = document.getElementById('flipLabel');
-            flipLabel.innerText = `FLIP ${betValue} OVER`;
-            flipLabel.style.display = 'block';
-            flipLabel.classList.add('flash');
-
-            // Make the slider more exciting as the bet increases
-            const excitementLevel = betValue / 10;
-            this.style.backgroundColor = `rgba(255, 204, 0, ${excitementLevel})`;
-            this.style.transform = `scale(${1 + excitementLevel * 0.1})`;
         });
 
         function flashBackground(color) {
@@ -769,13 +721,13 @@
             }, 1000);
         }
 
-        function addBetToHistory(blockNumber, betAmount, result, wonLostAmount, transactionHash) {
+        function addFlipToHistory(blockNumber, betAmount, result, wonLostAmount, transactionHash) {
             betHistory.unshift({ blockNumber, betAmount, result, wonLostAmount, transactionHash });
             localStorage.setItem('betHistory', JSON.stringify(betHistory));
-            updateBetHistoryTable();
+            updateFlipHistoryTable();
         }
 
-        function updateBetHistoryTable() {
+        function updateFlipHistoryTable() {
             const tableBody = document.getElementById('historyTable').getElementsByTagName('tbody')[0];
             tableBody.innerHTML = "";
             betHistory.forEach((bet) => {
@@ -798,8 +750,8 @@
             });
         }
 
-        function restoreBetHistory() {
-            updateBetHistoryTable();
+        function restoreFlipHistory() {
+            updateFlipHistoryTable();
             updateTotalWinsLosses();
         }
 
@@ -820,10 +772,9 @@
             const netProfit = (totalWins - totalLosses).toFixed(4);
 
             document.getElementById('totalWinsLosses').innerHTML = `
-                <div style="color: #28a745;">Total Wins: ${totalWins} OVER</div>
-                <div class="loss" style="color: #dc3545;">Total Losses: ${totalLosses} OVER</div>
-                <br>
-                <div class="profit" style="color: ${netProfit >= 0 ? '#28a745' : '#dc3545'};">Net Profit: ${netProfit} OVER</div>
+                <div>Total Wins: ${totalWins} OVER</div>
+                <div>Total Losses: ${totalLosses} OVER</div>
+                <div class="${netProfit >= 0 ? 'profit' : 'loss'}">Net Profit: ${netProfit} OVER</div>
             `;
         }
 
@@ -831,7 +782,7 @@
             for (let i = 0; i < 10; i++) {
                 const emoji = document.createElement('div');
                 emoji.className = 'floating-emoji';
-                emoji.innerText = '😢';
+                emoji.innerText = '💀'; // Changed to skull emoji
                 emoji.style.top = `${Math.random() * 100}%`;
                 emoji.style.left = `${Math.random() * 100}%`;
                 emoji.style.animationDuration = `${Math.random() * 2 + 3}s`;
@@ -853,13 +804,27 @@
         }
 
         function clearHistory() {
-            if (confirm("Are you sure you want to clear your betting history?")) {
+            if (confirm("Are you sure you want to clear your flip history?")) {
                 betHistory = [];
                 localStorage.removeItem('betHistory');
-                updateBetHistoryTable();
+                updateFlipHistoryTable();
                 updateTotalWinsLosses();
             }
         }
+
+        document.getElementById('betAmount').addEventListener('input', function () {
+            const betValue = this.value;
+            const flipLabel = document.getElementById('flipLabel');
+            flipLabel.innerText = `FLIP ${betValue} OVER`;
+            flipLabel.style.display = 'block';
+            flipLabel.classList.add('flash');
+
+            // Intensify the color and flash effect as the bet value increases
+            const intensity = betValue / 10;
+            flipLabel.style.color = `hsl(${intensity * 40}, 100%, 50%)`;
+            flipLabel.style.textShadow = `0 0 ${intensity * 20}px hsl(${intensity * 40}, 100%, 50%)`;
+        });
+
     </script>
 </body>
 </html>

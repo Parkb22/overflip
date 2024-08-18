@@ -45,7 +45,7 @@
         /* Navbar */
         .navbar {
             width: 100%;
-            padding: 15px 20px;
+            padding: 10px 20px;
             background-color: var(--bg-dark);
             box-shadow: 0px 0px 15px var(--shadow-dark);
             display: flex;
@@ -63,13 +63,13 @@
         }
 
         .navbar-logo img {
-            height: 40px; /* Adjust as necessary */
+            height: 30px; /* Adjusted size for better fit */
             margin-right: 10px;
         }
 
         .navbar-logo-text {
             color: var(--primary-color);
-            font-size: 2em;
+            font-size: 1.5em; /* Slightly smaller to fit better */
             cursor: pointer;
             text-shadow: 0 0 20px var(--primary-color);
             transition: transform 0.5s;
@@ -85,7 +85,7 @@
         .navbar-links a {
             color: var(--text-light);
             font-size: 1em;
-            margin: 0 10px;
+            margin: 0 15px; /* Increased spacing */
             text-decoration: none;
             opacity: 0.8;
             transition: color 0.5s, opacity 0.5s;
@@ -134,10 +134,15 @@
                 flex-direction: column;
                 align-items: flex-start;
                 width: 100%;
+                background-color: var(--bg-dark);
+                padding: 15px;
+                border-radius: 10px;
+                box-shadow: 0 5px 10px var(--shadow-dark);
+                margin-top: 10px;
             }
 
             .navbar-links a {
-                padding: 10px 20px;
+                padding: 10px 0;
                 text-align: left;
                 width: 100%;
             }
@@ -157,10 +162,14 @@
 
             .navbar-links.active {
                 display: flex;
+                position: absolute;
+                top: 60px; /* Adjust as necessary */
+                left: 0;
+                width: 100%;
             }
 
             .jackpot-container {
-                margin-top: 100px; /* Adjusted space on mobile */
+                margin-top: 120px; /* Increased space on mobile */
             }
         }
 
@@ -574,7 +583,7 @@
     <div class="animated-bg"></div>
     <nav class="navbar">
         <div class="navbar-logo">
-            <img src="/path/to/your/logo.png" alt="Logo">
+            <img src="file-MlTBP4xWrpL6gUT0tNhIPQBU" alt="Logo">
             <div class="navbar-logo-text" id="navbarLogo">OVERFLIP</div>
         </div>
         <div class="menu-toggle">☰</div>
@@ -607,7 +616,7 @@
 
         <div class="section">
             <div class="flip-container">
-                <img id="coin" src="https://s2.coinmarketcap.com/static/img/coins/200x200/29407.png" alt="Coin">
+                <img id="coin" src="file-Yy0z6XiSuwa7RLrBQypYBVg8" alt="Coin">
             </div>
             <br>
             <input type="range" min="1" max="10" value="1" class="slider" id="betAmount">

@@ -6,19 +6,32 @@
     <title>OverFlip.Fun</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
     <style>
+        :root {
+            --primary-color: #ffcc00;
+            --secondary-color: #00ffcc;
+            --tertiary-color: #ff00ff;
+            --bg-dark: rgba(42, 42, 42, 0.85);
+            --bg-light: rgba(245, 245, 245, 0.85);
+            --text-dark: #1a1a1a;
+            --text-light: #fff;
+            --shadow-dark: rgba(0, 0, 0, 0.5);
+            --shadow-light: rgba(200, 200, 200, 0.5);
+        }
+
         body {
             font-family: 'Poppins', sans-serif;
             margin: 0;
             padding: 0;
             display: flex;
+            flex-direction: column;
             align-items: center;
             justify-content: center;
             min-height: 100vh;
-            color: #fff;
+            color: var(--text-light);
             background: linear-gradient(135deg, #1a1a1a, #333, #1a1a1a);
             background-size: 400% 400%;
             animation: gradientAnimation 15s ease infinite;
-            overflow: auto;
+            transition: background 0.5s, color 0.5s;
         }
 
         @keyframes gradientAnimation {
@@ -27,18 +40,87 @@
             100% { background-position: 0% 50%; }
         }
 
+        /* Navbar */
+        .navbar {
+            width: 100%;
+            padding: 15px 20px;
+            background-color: var(--bg-dark);
+            box-shadow: 0px 0px 15px var(--shadow-dark);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: fixed;
+            top: 0;
+            z-index: 10;
+            transition: background-color 0.5s, box-shadow 0.5s;
+        }
+
+        .navbar-logo {
+            color: var(--primary-color);
+            font-size: 2em;
+            cursor: pointer;
+            text-shadow: 0 0 20px var(--primary-color);
+            transition: transform 0.5s;
+        }
+
+        .navbar-links {
+            display: flex;
+            align-items: center;
+        }
+
+        .navbar-links a {
+            color: var(--text-light);
+            font-size: 1em;
+            margin: 0 10px;
+            text-decoration: none;
+            cursor: not-allowed;
+            opacity: 0.8;
+            transition: color 0.5s, opacity 0.5s;
+        }
+
+        .navbar-links a:hover {
+            opacity: 1;
+        }
+
+        .navbar-right {
+            display: flex;
+            align-items: center;
+        }
+
+        #connectButton {
+            background-color: #f6851b;
+            box-shadow: 0 0 20px #f6851b;
+            margin-bottom: 0;
+            margin-left: 20px;
+        }
+
+        #connectButton:hover {
+            background-color: #e2761b;
+            box-shadow: 0 0 30px #e2761b;
+        }
+
+        #userBalance {
+            font-size: 1em;
+            font-weight: bold;
+            color: var(--secondary-color);
+            text-shadow: 0 0 20px var(--secondary-color);
+            margin-left: 20px;
+        }
+
+        /* Container */
         .container {
             width: 80%;
             max-width: 600px;
             padding: 20px;
-            box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.5);
-            border-radius: 15px; /* Slightly more rounded */
-            background-color: #2c2c2c;
-            margin-top: 20px;
+            box-shadow: 0px 0px 15px var(--shadow-dark);
+            border-radius: 25px;
+            background-color: var(--bg-dark);
+            margin-top: 100px;
             text-align: center;
             animation: fadeIn 1s ease-in-out;
             position: relative;
             overflow: hidden;
+            transition: background-color 0.5s, box-shadow 0.5s;
         }
 
         @keyframes fadeIn {
@@ -47,19 +129,19 @@
         }
 
         h1 {
-            color: #ffcc00;
-            font-size: 3em; /* Slightly bigger */
+            color: var(--primary-color);
+            font-size: 3em;
             margin-bottom: 10px;
-            text-shadow: 0 0 20px #ffcc00, 0 0 30px #ffcc00, 0 0 40px #ffcc00;
+            text-shadow: 0 0 20px var(--primary-color), 0 0 30px var(--primary-color), 0 0 40px var(--primary-color);
             cursor: pointer;
             transition: transform 0.5s;
         }
 
         .description {
-            font-size: 1.1em; /* Smaller font to fit in one line */
-            color: #00ffcc; /* Different neon color */
+            font-size: 1.1em;
+            color: var(--secondary-color);
             margin-bottom: 20px;
-            text-shadow: 0 0 10px #00ffcc;
+            text-shadow: 0 0 10px var(--secondary-color);
             display: flex;
             justify-content: center;
             align-items: center;
@@ -70,14 +152,14 @@
             position: relative;
             display: inline-block;
             cursor: pointer;
-            color: #ff00ff;
+            color: var(--tertiary-color);
             margin-left: 10px;
-            font-size: 0.9em; /* Smaller font size */
+            font-size: 0.9em;
         }
 
         .tooltip .tooltiptext {
             visibility: hidden;
-            width: 150px; /* Smaller width */
+            width: 150px;
             background-color: #333;
             color: #fff;
             text-align: center;
@@ -108,45 +190,44 @@
             opacity: 1;
         }
 
-        .rotate {
-            animation: rotateLogo 1s ease-in-out forwards;
-        }
-
-        @keyframes rotateLogo {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-
         .section {
             margin: 20px 0;
         }
 
-        .jackpot-container {
+        /* Circular Coin Flip Box */
+        .flip-container {
             margin-bottom: 20px;
             padding: 20px;
-            background-color: #222;
-            border-radius: 15px; /* Slightly more rounded */
-            box-shadow: 0 0 20px #00ffcc;
+            background-color: var(--bg-dark);
+            border-radius: 50%;
+            box-shadow: 0 0 20px var(--secondary-color);
             text-align: center;
             position: relative;
+            width: 200px;
+            height: 200px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto;
+            transition: background-color 0.5s, box-shadow 0.5s;
         }
 
         .jackpot-title {
             font-size: 1.5em;
-            color: #ff00ff;
-            text-shadow: 0 0 20px #ff00ff;
+            color: var(--tertiary-color);
+            text-shadow: 0 0 20px var(--tertiary-color);
         }
 
         .jackpot-amount {
             font-size: 2em;
-            color: #00ffcc;
-            text-shadow: 0 0 20px #00ffcc;
+            color: var(--secondary-color);
+            text-shadow: 0 0 20px var(--secondary-color);
             margin-top: 10px;
         }
 
         .jackpot-info {
             font-size: 1em;
-            color: #ffcc00;
+            color: var(--primary-color);
             margin-top: 10px;
         }
 
@@ -155,34 +236,23 @@
             font-size: 16px;
             cursor: pointer;
             background-color: #0ff;
-            color: #0d0d0d;
+            color: var(--text-dark);
             border: none;
-            border-radius: 12px; /* Slightly more rounded */
+            border-radius: 20px;
             margin: 10px;
             transition: background-color 0.3s, transform 0.3s, box-shadow 0.3s;
             box-shadow: 0 0 20px #0ff;
         }
 
         button:hover {
-            background-color: #ff00ff;
-            box-shadow: 0 0 30px #ff00ff;
+            background-color: var(--tertiary-color);
+            box-shadow: 0 0 30px var(--tertiary-color);
             transform: scale(1.05);
         }
 
         button:active {
             transform: scale(0.95);
             box-shadow: 0 0 15px #0ff;
-        }
-
-        #connectButton {
-            background-color: #f6851b;
-            box-shadow: 0 0 20px #f6851b;
-            margin-bottom: 15px;
-        }
-
-        #connectButton:hover {
-            background-color: #e2761b;
-            box-shadow: 0 0 30px #e2761b;
         }
 
         input, .slider {
@@ -195,10 +265,10 @@
             outline: none;
             opacity: 0.8;
             transition: opacity .2s, box-shadow 0.3s;
-            border-radius: 12px; /* Slightly more rounded */
-            margin: 10px auto; /* Center on PC */
+            border-radius: 12px;
+            margin: 10px auto;
             display: block;
-            box-shadow: 0 0 10px #ffcc00;
+            box-shadow: 0 0 10px var(--primary-color);
         }
 
         .slider::-webkit-slider-thumb {
@@ -206,7 +276,7 @@
             appearance: none;
             width: 25px;
             height: 25px;
-            background: #ffcc00;
+            background: var(--primary-color);
             cursor: pointer;
             border-radius: 50%;
         }
@@ -214,7 +284,7 @@
         .slider::-moz-range-thumb {
             width: 25px;
             height: 25px;
-            background: #ffcc00;
+            background: var(--primary-color);
             cursor: pointer;
             border-radius: 50%;
         }
@@ -236,12 +306,12 @@
 
         th {
             background-color: #333;
-            color: #00ffcc;
-            text-shadow: 0 0 10px #00ffcc;
+            color: var(--secondary-color);
+            text-shadow: 0 0 10px var(--secondary-color);
         }
 
         td a {
-            color: #ffcc00;
+            color: var(--primary-color);
             text-decoration: none;
         }
 
@@ -263,23 +333,23 @@
             height: 120px;
             margin: 20px auto;
             transition: transform 1s ease-in-out, box-shadow 2s linear;
-            box-shadow: 0 0 20px #ffcc00;
+            box-shadow: 0 0 20px var(--primary-color);
             display: block;
             animation: neonRotate 5s linear infinite;
         }
 
         @keyframes neonRotate {
-            0% { box-shadow: 0 0 20px #ffcc00; }
-            25% { box-shadow: 0 0 20px #ff00ff; }
-            50% { box-shadow: 0 0 20px #00ffcc; }
+            0% { box-shadow: 0 0 20px var(--primary-color); }
+            25% { box-shadow: 0 0 20px var(--tertiary-color); }
+            50% { box-shadow: 0 0 20px var(--secondary-color); }
             75% { box-shadow: 0 0 20px #28a745; }
-            100% { box-shadow: 0 0 20px #ffcc00; }
+            100% { box-shadow: 0 0 20px var(--primary-color); }
         }
 
         .message {
             font-size: 1.2em;
             font-weight: bold;
-            color: #ffcc00;
+            color: var(--primary-color);
             margin-top: 20px;
         }
 
@@ -292,24 +362,17 @@
         }
 
         #walletAddress {
-            font-size: 0.8em; /* Smaller font for the wallet address */
-            color: #00ffcc;
-            text-shadow: 0 0 10px #00ffcc;
+            font-size: 0.8em;
+            color: var(--secondary-color);
+            text-shadow: 0 0 10px var(--secondary-color);
             word-break: break-all;
             margin-top: 10px;
-        }
-
-        #userBalance {
-            font-size: 1.5em;
-            font-weight: bold;
-            color: #00ffcc;
-            text-shadow: 0 0 20px #00ffcc;
         }
 
         #totalWinsLosses {
             margin-top: 10px;
             font-size: 1.2em;
-            color: #ffcc00;
+            color: var(--primary-color);
         }
 
         .profit, .loss {
@@ -354,7 +417,7 @@
             padding: 10px 20px;
             text-align: center;
             cursor: pointer;
-            border-radius: 12px; /* Slightly more rounded */
+            border-radius: 20px;
             display: inline-block;
             margin-bottom: 10px;
             box-shadow: 0 0 10px #555;
@@ -369,7 +432,7 @@
         #progressBarContainer {
             width: 100%;
             background-color: #333;
-            border-radius: 12px; /* Slightly more rounded */
+            border-radius: 12px;
             margin: 20px 0;
             display: none;
         }
@@ -378,7 +441,7 @@
             width: 0%;
             height: 10px;
             background-color: #0ff;
-            border-radius: 12px; /* Slightly more rounded */
+            border-radius: 12px;
             animation: progress 2s linear infinite;
         }
 
@@ -390,8 +453,8 @@
         .flip-label {
             font-size: 2em;
             font-weight: bold;
-            color: #ffcc00;
-            text-shadow: 0 0 10px #ffcc00;
+            color: var(--primary-color);
+            text-shadow: 0 0 10px var(--primary-color);
             display: none;
         }
 
@@ -404,13 +467,65 @@
             50% { opacity: 0.5; }
             100% { opacity: 1; }
         }
+
+        /* Dark/Light Mode Toggle */
+        .dark-mode {
+            --bg-dark: rgba(42, 42, 42, 0.85);
+            --bg-light: rgba(245, 245, 245, 0.85);
+            --text-dark: #1a1a1a;
+            --text-light: #fff;
+            --shadow-dark: rgba(0, 0, 0, 0.5);
+            --shadow-light: rgba(200, 200, 200, 0.5);
+        }
+
+        .light-mode {
+            --bg-dark: rgba(255, 255, 255, 0.85);
+            --bg-light: rgba(240, 240, 240, 0.85);
+            --text-dark: #1a1a1a;
+            --text-light: #1a1a1a;
+            --shadow-dark: rgba(200, 200, 200, 0.5);
+            --shadow-light: rgba(0, 0, 0, 0.1);
+        }
+
+        /* Footer */
+        footer {
+            margin-top: 30px;
+            padding: 10px;
+            text-align: center;
+            color: var(--primary-color);
+            font-size: 1em;
+            text-shadow: 0 0 10px var(--primary-color);
+        }
+
+        footer a {
+            color: var(--tertiary-color);
+            text-decoration: none;
+        }
+
+        footer a:hover {
+            text-decoration: underline;
+        }
     </style>
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.4.0/dist/confetti.browser.min.js"></script>
 </head>
-<body>
+<body class="dark-mode">
     <div class="animated-bg"></div>
+    <nav class="navbar">
+        <div class="navbar-logo" id="navbarLogo">OVERFLIP</div>
+        <div class="navbar-links">
+            <a href="#">Points</a>
+            <a href="#">Referrals</a>
+            <a href="#">Leaderboard</a>
+            <a href="#">Community</a>
+        </div>
+        <div class="navbar-right">
+            <div id="userBalance"></div>
+            <button id="connectButton">Connect to 🦊 MetaMask</button>
+            <button id="themeToggle">🌙</button>
+        </div>
+    </nav>
+
     <div class="container">
-        <h1 id="logo">OVERFLIP</h1>
         <div class="description">
             Provably fair game, 50% to double up, 50% to get nothing at all
             <span class="tooltip">ℹ
@@ -419,19 +534,9 @@
         </div>
 
         <div class="section">
-            <button id="connectButton">Connect to 🦊 MetaMask</button>
-            <p id="walletAddress"></p>
-            <p id="userBalance"></p>
-        </div>
-
-        <div class="jackpot-container">
-            <div class="jackpot-title">Current Jackpot</div>
-            <div id="jackpotAmount" class="jackpot-amount">Loading...</div>
-            <div class="jackpot-info">1% Chance on each flip to win the Jackpot! <span class="tooltip">ℹ<span class="tooltiptext">When you win the jackpot, 50% of the jackpot balance is sent to you instantly.</span></span></div>
-        </div>
-
-        <div class="section">
-            <img id="coin" src="https://s2.coinmarketcap.com/static/img/coins/200x200/29407.png" alt="Coin">
+            <div class="flip-container">
+                <img id="coin" src="https://s2.coinmarketcap.com/static/img/coins/200x200/29407.png" alt="Coin">
+            </div>
             <br>
             <input type="range" min="1" max="10" value="1" class="slider" id="betAmount">
             <br>
@@ -473,10 +578,14 @@
         </div>
     </div>
 
+    <footer>
+        Created by the <a href="#">OverFaucet Team</a> with Love ❤️
+    </footer>
+
     <script src="https://cdn.jsdelivr.net/gh/ethereum/web3.js/dist/web3.min.js"></script>
     <script>
-        const contractAddress = "0x315590b6ac25baF2C8F6a74CdE77FaF0FF2De778"; // Your contract address
-        const jackpotContractAddress = "0xcbee6aF6ab310025888D340ab3Fd3F7fe808E000"; // Your jackpot contract address
+        const contractAddress = "0x315590b6ac25baF2C8F6a74CdE77FaF0FF2De778";
+        const jackpotContractAddress = "0xcbee6aF6ab310025888D340ab3Fd3F7fe808E000";
         let contractABI;
         let web3;
         let contract;
@@ -484,7 +593,7 @@
         let betHistory = JSON.parse(localStorage.getItem('betHistory')) || [];
 
         const OVER_DOLPHIN_NETWORK_PARAMS = {
-            chainId: '0x84554c', // Chain ID 541764 in hexadecimal
+            chainId: '0x84554c',
             chainName: 'Over Dolphin',
             rpcUrls: ['https://wallet-dolphin.rpc.over.network/'],
             nativeCurrency: {
@@ -521,7 +630,7 @@
             if (typeof window.ethereum !== 'undefined') {
                 try {
                     const networkId = await web3.eth.getChainId();
-                    if (networkId !== 541764) { // 541764 is the Over Dolphin network ID
+                    if (networkId !== 541764) {
                         await switchToOverDolphinNetwork();
                     }
 
@@ -531,15 +640,11 @@
                     document.getElementById('flipButton').disabled = false;
                     document.getElementById('connectButton').innerText = "Disconnect";
 
-                    // Fetch and display the user's balance
                     const balance = await web3.eth.getBalance(userAccount);
                     const balanceInEther = parseFloat(web3.utils.fromWei(balance, "ether")).toFixed(4);
                     document.getElementById('userBalance').innerText = `Balance: ${balanceInEther} OVER`;
 
-                    // Restore the flip history
                     restoreFlipHistory();
-
-                    // Fetch and display the jackpot balance
                     await updateJackpotBalance();
 
                 } catch (error) {
@@ -564,14 +669,13 @@
 
         document.getElementById('connectButton').addEventListener('click', async () => {
             if (document.getElementById('connectButton').innerText === "Disconnect") {
-                // Disconnect logic
                 document.getElementById('walletAddress').innerText = "";
                 document.getElementById('userBalance').innerText = "";
                 document.getElementById('connectButton').innerText = "Connect to 🦊 MetaMask";
                 document.getElementById('flipButton').disabled = true;
                 return;
             }
-            
+
             web3 = new Web3(Web3.givenProvider || "http://localhost:8545");
 
             try {
@@ -579,7 +683,6 @@
                 contractABI = await response.json();
                 contract = new web3.eth.Contract(contractABI, contractAddress);
 
-                // Check if user is on the Over Dolphin network
                 await checkNetworkAndConnect();
             } catch (error) {
                 console.error("Error loading the ABI or initializing the contract:", error);
@@ -611,14 +714,11 @@
                 });
 
                 document.getElementById('progressBarContainer').style.display = 'none';
-
-                // Rotate the logo after the bet
                 document.getElementById('logo').classList.add('rotate');
                 setTimeout(() => {
                     document.getElementById('logo').classList.remove('rotate');
                 }, 1000);
 
-                // Coin flip animation
                 const coinElement = document.getElementById('coin');
                 coinElement.classList.add('flip');
 
@@ -644,14 +744,12 @@
                     document.getElementById('status').innerText = `You won! Amount: ${wonAmount} $OVER`;
                     document.getElementById('status').classList.add('win');
 
-                    // Trigger the confetti effect
                     confetti({
                         particleCount: 100,
                         spread: 70,
                         origin: { y: 0.6 }
                     });
 
-                    // Flash green background
                     flashBackground('green');
 
                 } else {
@@ -661,25 +759,20 @@
                     document.getElementById('status').classList.add('lose');
                     triggerSadFaceEmojis();
 
-                    // Flash red background
                     flashBackground('red');
                 }
 
-                // Add the result to the history table and save to localStorage
                 addFlipToHistory(receipt.blockNumber, betAmountEther, resultText, wonLostAmount, receipt.transactionHash);
 
-                // Update balance and total wins/losses after the transaction
                 const newBalance = await web3.eth.getBalance(userAccount);
                 const newBalanceInEther = parseFloat(web3.utils.fromWei(newBalance, "ether")).toFixed(4);
                 document.getElementById('userBalance').innerText = `Balance: ${newBalanceInEther} OVER`;
 
                 updateTotalWinsLosses();
 
-                // Check if the jackpot was won
                 if (flipEvent.returnValues.jackpotWon) {
                     setTimeout(() => {
                         alert(`Congratulations! You've won the jackpot of ${flipEvent.returnValues.jackpotAmount} $OVER!`);
-                        // Double the confetti effect for a longer period
                         for (let i = 0; i < 2; i++) {
                             setTimeout(() => {
                                 confetti({
@@ -689,10 +782,9 @@
                                 });
                             }, i * 1000);
                         }
-                    }, 500); // Delayed for effect
+                    }, 500);
                 }
 
-                // Update jackpot balance after potential win
                 await updateJackpotBalance();
 
             } catch (error) {
@@ -708,7 +800,7 @@
             document.body.style.backgroundColor = color;
             setTimeout(() => {
                 document.body.style.transition = 'background-color 1s ease';
-                document.body.style.backgroundColor = ''; // Reset to original gradient
+                document.body.style.backgroundColor = '';
             }, 1000);
         }
 
@@ -773,7 +865,7 @@
             for (let i = 0; i < 10; i++) {
                 const emoji = document.createElement('div');
                 emoji.className = 'floating-emoji';
-                emoji.innerText = '💀'; // Changed to skull emoji
+                emoji.innerText = '💀';
                 emoji.style.top = `${Math.random() * 100}%`;
                 emoji.style.left = `${Math.random() * 100}%`;
                 emoji.style.animationDuration = `${Math.random() * 2 + 3}s`;
@@ -810,10 +902,22 @@
             flipLabel.style.display = 'block';
             flipLabel.classList.add('flash');
 
-            // Intensify the color and flash effect as the bet value increases
             const intensity = betValue / 10;
             flipLabel.style.color = `hsl(${intensity * 40}, 100%, 50%)`;
             flipLabel.style.textShadow = `0 0 ${intensity * 20}px hsl(${intensity * 40}, 100%, 50%)`;
+        });
+
+        document.getElementById('themeToggle').addEventListener('click', () => {
+            const bodyClass = document.body.classList;
+            if (bodyClass.contains('dark-mode')) {
+                bodyClass.remove('dark-mode');
+                bodyClass.add('light-mode');
+                document.getElementById('themeToggle').innerText = '🌙';
+            } else {
+                bodyClass.remove('light-mode');
+                bodyClass.add('dark-mode');
+                document.getElementById('themeToggle').innerText = '☀️';
+            }
         });
 
     </script>

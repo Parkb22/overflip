@@ -7,16 +7,16 @@
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
     <style>
         :root {
-            --primary-color: #ffcc00;
-            --secondary-color: #00ffcc;
-            --tertiary-color: #ff00ff;
+            --primary-color: #ff8c00;
+            --secondary-color: #007acc;
+            --tertiary-color: #ff4081;
             --bg-dark: rgba(42, 42, 42, 0.85);
-            --bg-light: rgba(245, 245, 245, 0.85);
+            --bg-light: rgba(255, 255, 255, 0.95);
             --text-dark: #1a1a1a;
-            --text-light: #fff;
+            --text-light: #f0f0f0;
             --shadow-dark: rgba(0, 0, 0, 0.5);
             --shadow-light: rgba(200, 200, 200, 0.5);
-            --light-bg-gradient: linear-gradient(135deg, #f0f0f0, #dcdcdc);
+            --light-bg-gradient: linear-gradient(135deg, #ffffff, #eeeeee);
             --dark-bg-gradient: linear-gradient(135deg, #1a1a1a, #333, #1a1a1a);
         }
 
@@ -68,6 +68,8 @@
         .navbar-links {
             display: flex;
             align-items: center;
+            justify-content: center;
+            flex: 1;
         }
 
         .navbar-links a {
@@ -87,13 +89,14 @@
         .navbar-right {
             display: flex;
             align-items: center;
+            gap: 15px;
         }
 
         #connectButton {
             background-color: #f6851b;
             box-shadow: 0 0 20px #f6851b;
             margin-bottom: 0;
-            margin-left: 20px;
+            padding: 8px 16px;
         }
 
         #connectButton:hover {
@@ -106,23 +109,68 @@
             font-weight: bold;
             color: var(--secondary-color);
             text-shadow: 0 0 20px var(--secondary-color);
-            margin-left: 20px;
+        }
+
+        /* Mobile-specific styles */
+        @media only screen and (max-width: 768px) {
+            .navbar {
+                flex-direction: column;
+                align-items: flex-start;
+                padding: 10px;
+            }
+
+            .navbar-links {
+                display: none;
+                flex-direction: column;
+                align-items: flex-start;
+                width: 100%;
+            }
+
+            .navbar-links a {
+                padding: 10px 20px;
+                text-align: left;
+                width: 100%;
+            }
+
+            .navbar-right {
+                justify-content: flex-end;
+                width: 100%;
+            }
+
+            .navbar-right button {
+                margin-left: auto;
+            }
+
+            .menu-toggle {
+                display: block;
+                font-size: 1.5em;
+                cursor: pointer;
+                margin-left: auto;
+            }
+
+            .navbar-links.active {
+                display: flex;
+            }
+
+            .jackpot-container {
+                margin-top: 60px;
+            }
         }
 
         /* Container */
-        .container {
+        .container, .jackpot-container {
             width: 80%;
             max-width: 600px;
             padding: 20px;
             box-shadow: 0px 0px 15px var(--shadow-dark);
             border-radius: 25px;
             background-color: var(--bg-dark);
-            margin-top: 150px;
             text-align: center;
             animation: fadeIn 1s ease-in-out;
             position: relative;
             overflow: hidden;
             transition: background-color 0.5s, box-shadow 0.5s;
+            margin-top: 20px;
         }
 
         @keyframes fadeIn {
@@ -211,16 +259,6 @@
             align-items: center;
             justify-content: center;
             margin: 0 auto;
-            transition: background-color 0.5s, box-shadow 0.5s;
-        }
-
-        .jackpot-container {
-            margin-bottom: 20px;
-            padding: 20px;
-            background-color: var(--bg-dark);
-            border-radius: 25px;
-            box-shadow: 0 0 20px var(--secondary-color);
-            text-align: center;
             transition: background-color 0.5s, box-shadow 0.5s;
         }
 
@@ -499,9 +537,9 @@
             --shadow-dark: rgba(200, 200, 200, 0.5);
             --shadow-light: rgba(0, 0, 0, 0.1);
             --background-gradient: var(--light-bg-gradient);
-            --primary-color: #ff7f00; /* Adjusted for better readability */
-            --secondary-color: #007acc; /* Adjusted for better readability */
-            --tertiary-color: #ff4081; /* Adjusted for better readability */
+            --primary-color: #ff7f00;
+            --secondary-color: #007acc;
+            --tertiary-color: #ff4081;
         }
 
         /* Footer */
@@ -529,6 +567,7 @@
     <div class="animated-bg"></div>
     <nav class="navbar">
         <div class="navbar-logo" id="navbarLogo">OVERFLIP</div>
+        <div class="menu-toggle">☰</div>
         <div class="navbar-links">
             <a href="#">Points</a>
             <a href="#">Referrals</a>
@@ -945,6 +984,10 @@
             }
         });
 
+        document.querySelector('.menu-toggle').addEventListener('click', () => {
+            const links = document.querySelector('.navbar-links');
+            links.classList.toggle('active');
+        });
     </script>
 </body>
 </html>

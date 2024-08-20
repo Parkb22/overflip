@@ -1,991 +1,586 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>OverFlip.Fun</title>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-TJ4NJJSFEQ"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+
+        gtag('config', 'G-TJ4NJJSFEQ');
+    </script>
+    <meta charset="utf-8">
+    <meta name="coinzilla" content="d61d37aeeeb6010e7527e2af252bf23a" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="OVER Testnet Faucet">
+    <meta name="author" content="OverStake">
+    <title>OVER Testnet Faucet</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&family=Montserrat:wght@700&display=swap" rel="stylesheet">
     <style>
-        /* General Styles */
-        html, body {
-            height: 100%;
-            margin: 0;
-            padding: 0;
+        /* Modernized theme */
+        body {
+            background-color: #1f1f2e; /* Modern dark background */
             font-family: 'Poppins', sans-serif;
-            color: #fff;
-            background: linear-gradient(135deg, #1a1a1a, #2a2a2a, #1a1a1a);
-            background-size: 400% 400%;
-            animation: gradientBackground 15s ease infinite;
-            overflow-x: hidden;
-            overflow-y: auto;
+            padding-top: 70px;
+            padding-bottom: 30px;
+            font-size: 1rem;
+            color: #d1d1d1;
+            line-height: 1.6;
         }
 
-        @keyframes gradientBackground {
-            0% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
-            100% { background-position: 0% 50%; }
-        }
-
-        /* Container */
-        .container {
-            width: 95%;
-            max-width: 700px;
-            padding: 20px;
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 30px;
-            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
-            backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.18);
-            text-align: center;
-            animation: fadeIn 1s ease-in-out;
-            margin: 20px auto;
-            box-sizing: border-box;
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
-        }
-
-        /* Background */
-        .animated-bg {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: radial-gradient(circle, rgba(63,94,251,1) 0%, rgba(252,70,107,1) 100%);
-            animation: bgAnimation 20s linear infinite alternate;
-            z-index: -2;
-            opacity: 0.3;
-        }
-
-        @keyframes bgAnimation {
-            0% { background-position: 0% 50%; }
-            100% { background-position: 100% 50%; }
-        }
-
-        /* Floating Emojis */
-        .floating-emoji {
-            position: fixed;
-            font-size: 2.5em;
-            pointer-events: none;
-            animation: bounce 5s ease-in-out infinite;
-            z-index: -1;
-        }
-
-        @keyframes bounce {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-30px); }
-        }
-
-        /* Jackpot Section */
-        .jackpot-container {
-            background: linear-gradient(135deg, #ffcc00, #ff9900);
-            border-radius: 20px;
-            padding: 20px;
-            margin-bottom: 20px;
-            box-shadow: 0 10px 30px rgba(255, 153, 0, 0.6);
-            position: relative;
-            box-sizing: border-box;
-        }
-
-        .jackpot-title {
-            font-size: 2em;
-            color: #fff;
-            text-shadow: 0 0 20px #ff6600;
-            position: relative;
-            display: inline-block;
-            margin: 0;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-            animation: neonPulse 1.5s ease-in-out infinite alternate;
-        }
-
-        .jackpot-amount {
-            font-size: 3em;
-            color: #ffffff;
-            text-shadow: 0 0 20px #ff6600, 0 0 30px #ff6600, 0 0 40px #ff6600;
-            margin-top: 10px;
-            animation: neonPulse 1.5s ease-in-out infinite alternate;
-        }
-
-        @keyframes neonPulse {
-            0% { text-shadow: 0 0 10px #ff6600, 0 0 20px #ff6600; }
-            100% { text-shadow: 0 0 20px #ffcc00, 0 0 40px #ffcc00; }
-        }
-
-        /* Tooltip */
-        .tooltip {
-            position: relative;
-            display: inline-block;
-            cursor: pointer;
-            margin-left: 5px;
-        }
-
-        .tooltip .tooltiptext {
-            visibility: hidden;
-            width: 180px;
-            background-color: #333;
-            color: #fff;
-            text-align: center;
-            border-radius: 5px;
-            padding: 8px;
-            position: absolute;
-            z-index: 1;
-            top: 120%;
-            left: 50%;
-            transform: translateX(-50%);
-            opacity: 0;
-            transition: opacity 0.3s;
-            font-size: 0.75em;
-        }
-
-        .tooltip:hover .tooltiptext {
-            visibility: visible;
-            opacity: 1;
-        }
-
-        .tooltip-icon {
-            font-size: 1.2em;
-            vertical-align: middle;
-        }
-
-        /* Headings */
-        h1 {
-            color: #ffcc00;
-            font-size: 2.5em;
-            margin-bottom: 20px;
-            text-shadow: 0 0 20px #ffcc00;
-            cursor: pointer;
-            transition: transform 0.5s, text-shadow 0.5s;
-        }
-
-        h1:hover {
-            transform: scale(1.1);
-            text-shadow: 0 0 40px #ffcc00;
-        }
-
-        .center-text {
-            margin-top: 10px;
-            font-size: 0.9em;
-            color: #ffffff;
-            text-shadow: 0 0 10px #ffffff;
-            max-width: 90%;
-            margin-left: auto;
-            margin-right: auto;
-            line-height: 1.5em;
-            position: relative;
-            display: inline-block;
-        }
-
-        button {
-            padding: 15px 30px;
-            font-size: 16px;
-            cursor: pointer;
-            background: linear-gradient(135deg, #0ff, #00f);
-            color: #fff;
-            border: none;
-            border-radius: 12px;
-            margin: 15px;
-            transition: background 0.3s, transform 0.3s, box-shadow 0.3s;
-            box-shadow: 0 4px 15px rgba(0, 255, 255, 0.4);
-        }
-
-        button:hover {
-            background: linear-gradient(135deg, #00f, #0ff);
-            box-shadow: 0 8px 30px rgba(0, 255, 255, 0.6);
-            transform: scale(1.05);
-        }
-
-        button:active {
-            transform: scale(0.95);
-            box-shadow: 0 4px 20px rgba(0, 255, 255, 0.4);
-        }
-
-        #connectButton {
-            background: linear-gradient(135deg, #f6851b, #f6501b);
-            box-shadow: 0 4px 15px rgba(246, 129, 27, 0.4);
-        }
-
-        #connectButton:hover {
-            background: linear-gradient(135deg, #f6501b, #f6851b);
-            box-shadow: 0 8px 30px rgba(246, 129, 27, 0.6);
-        }
-
-        input, .slider {
-            appearance: none;
-            width: 100%;
-            height: 15px;
-            background: #333;
-            outline: none;
-            opacity: 0.9;
-            transition: opacity .2s, background-color 0.5s, transform 0.2s;
+        /* Navbar styles */
+        .navbar-custom {
+            background-color: #252537;
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.5);
+            padding: 10px 20px;
             border-radius: 10px;
-            margin: 20px 0;
-            box-shadow: inset 4px 4px 10px rgba(0, 0, 0, 0.6), inset -4px -4px 10px rgba(255, 255, 255, 0.2);
-            max-width: 100%; /* Prevent overflow */
         }
 
-        .slider::-webkit-slider-thumb {
-            appearance: none;
-            width: 25px;
-            height: 25px;
-            background: #ffcc00;
+        .navbar-brand {
+            color: #ffffff;
+            font-size: 1.5rem;
+            font-weight: 600;
+        }
+
+        .navbar-brand img {
+            max-height: 40px;
+            margin-right: 10px;
+        }
+
+        .navbar-nav .nav-link {
+            color: #007bff;
+            font-size: 1.2rem;
+            margin-left: 20px;
             cursor: pointer;
-            border-radius: 50%;
-            box-shadow: 0 0 10px #ffcc00;
         }
 
-        .slider::-moz-range-thumb {
-            width: 25px;
-            height: 25px;
-            background: #ffcc00;
+        .navbar-nav .nav-link:hover {
+            color: #ffffff;
+        }
+
+        .navbar-nav .nav-link.disabled {
+            color: #6c7a96;
+            cursor: not-allowed;
+        }
+
+        /* Mobile menu styling */
+        .navbar-toggler {
+            background-color: #007bff;
+            border: none;
+        }
+
+        .navbar-toggler-icon {
+            background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" fill="#1f1f2e" viewBox="0 0 30 30"><path stroke="rgba(31,31,46,0.5)" stroke-width="2" d="M4 7h22M4 15h22M4 23h22"/></svg>');
+        }
+
+        /* Header styles */
+        h1, h3 {
+            color: #007bff;
+            font-family: 'Montserrat', sans-serif;
+        }
+
+        /* Available Funds Highlight */
+        #balance, #points {
+            color: #ffc107;
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+
+        /* Modern container style */
+        .container-style {
+            background: #252537;
+            border-radius: 10px;
+            padding: 30px;
+            margin-bottom: 20px;
+            color: #d1d1d1;
+        }
+
+        /* Background with curved drop effect */
+        .curved-background {
+            background-color: #2a2a3e;
+            border-radius: 0 0 50px 50px;
+            padding: 50px;
+            margin-top: -20px;
+        }
+
+        /* Buttons with contrast */
+        .btn-claim, .btn-donate, .btn-metamask {
+            max-width: 200px;
+            margin: 0 auto 15px;
+            display: block;
+            color: #ffffff;
+            padding: 10px 20px;
+            border-radius: 10px;
             cursor: pointer;
-            border-radius: 50%;
-            box-shadow: 0 0 10px #ffcc00;
+            border: none;
+            transition: background-color 0.3s, transform 0.3s;
         }
 
-        .neon-red {
-            background: #ff0000;
-            box-shadow: 0 0 20px #ff0000;
+        .btn-claim {
+            background-color: #007bff;
         }
 
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 30px;
-            background-color: #333;
-            border-radius: 15px;
-            overflow: hidden;
-            font-size: 0.85em; /* Reduce font size */
+        .btn-donate {
+            background-color: #f03a5f;
         }
 
-        th, td {
-            padding: 10px;
-            text-align: center;
-            border: 1px solid #555;
-            word-wrap: break-word; /* Ensure words don't overflow */
+        .btn-metamask {
+            background-color: #f9a825;
         }
 
-        th {
-            background-color: #444;
-            color: #00ffcc;
-            text-shadow: 0 0 10px #00ffcc;
+        .btn-claim:hover, .btn-donate:hover, .btn-metamask:hover {
+            transform: translateY(-3px);
+            opacity: 0.9;
         }
 
-        td {
-            color: #fff;
-            background-color: #2b2b2b;
-        }
-
-        td a {
-            color: #ffcc00;
+        /* Links */
+        a {
+            color: #007bff;
             text-decoration: none;
         }
 
-        td a:hover {
-            color: #ff6600;
+        a:hover {
+            color: #ffffff;
             text-decoration: underline;
         }
 
-        .win-amount {
-            color: #28a745;
-        }
-
-        .lose-amount {
-            color: #dc3545;
-        }
-
-        #coin {
-            width: 120px;
-            height: 120px;
-            margin: 30px auto;
-            transition: transform 1s ease-in-out;
-        }
-
-        .flip {
-            transform: rotateY(3600deg);
-        }
-
-        .slow-spin {
-            animation: slowSpin 5s linear infinite;
-        }
-
-        @keyframes slowSpin {
-            from { transform: rotateY(0deg); }
-            to { transform: rotateY(360deg); }
-        }
-
-        .crazy-effect {
-            animation: crazy 0.5s linear infinite;
-        }
-
-        @keyframes crazy {
-            0% { transform: rotate(0deg) scale(1); }
-            25% { transform: rotate(15deg) scale(1.1); }
-            50% { transform: rotate(-15deg) scale(1.1); }
-            75% { transform: rotate(10deg) scale(1.1); }
-            100% { transform: rotate(-10deg) scale(1); }
-        }
-
-        .message {
-            font-size: 1em; /* Smaller font */
-            font-weight: bold;
-            color: #ffcc00;
-            margin-top: 30px;
-            transition: transform 0.5s ease-in-out;
-        }
-
-        .win {
-            color: #28a745;
-            text-shadow: 0 0 20px #28a745;
-            animation: popout 1s ease-in-out;
-        }
-
-        .lose {
-            color: #dc3545;
-            text-shadow: 0 0 20px #dc3545;
-        }
-
-        @keyframes popout {
-            0% { transform: scale(1); }
-            50% { transform: scale(1.3); }
-            100% { transform: scale(1); }
-        }
-
-        #walletAddress {
-            font-size: 0.8em;
-            color: #00ffcc;
-            text-shadow: 0 0 10px #00ffcc;
-            word-break: break-all;
-            margin-top: 10px;
-        }
-
-        #userBalance {
-            font-size: 1.5em;
-            font-weight: bold;
-            color: #00ffcc;
-            text-shadow: 0 0 20px #00ffcc;
-        }
-
-        #totalWinsLosses {
-            margin-top: 20px;
-            font-size: 1em;
-            color: #ffcc00;
-            overflow: hidden;
-            max-height: 70px; /* Limit the height */
-        }
-
-        .profit, .loss {
-            font-size: 1em; /* Same size for both to prevent jumpy layout */
-            text-shadow: 0 0 20px #28a745;
-            margin-top: 20px;
-            color: #28a745; /* Set consistent color */
-        }
-
-        .collapse-button {
-            background-color: #555;
-            border: none;
-            color: white;
-            padding: 15px 30px;
+        /* Footer styling */
+        footer {
+            border-top: 2px solid #6c7a96;
+            padding: 10px;
             text-align: center;
-            cursor: pointer;
+            background-color: #252537;
+            margin-top: 40px;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.5);
             border-radius: 10px;
-            display: inline-block;
-            margin-bottom: 15px;
-            box-shadow: 0 0 20px #555;
-            transition: transform 0.3s;
+            color: #d1d1d1;
         }
 
-        .collapse-button:hover {
-            transform: scale(1.05);
+        .footer-spacing {
+            margin-bottom: 40px;
         }
 
-        .collapse-content {
-            display: none;
-            overflow: hidden;
-            transition: max-height 0.5s ease-out;
-        }
-
-        #progressBarContainer {
-            width: 100%;
-            background-color: #333;
+        /* Banner ad styling */
+        .banner-ad {
+            background: #252537;
             border-radius: 10px;
-            margin: 30px 0;
-            display: none;
-        }
-
-        #progressBar {
-            width: 0%;
-            height: 15px;
-            background-color: #0ff;
-            border-radius: 10px;
-            animation: excitingProgress 2s ease infinite;
-        }
-
-        @keyframes excitingProgress {
-            0% { width: 0%; background-color: #0ff; }
-            50% { width: 75%; background-color: #ff00ff; }
-            100% { width: 100%; background-color: #0ff; }
-        }
-
-        .flip-label {
-            font-size: 2em; /* Reduced font size */
-            font-weight: bold;
-            color: #ffcc00;
-            text-shadow: 0 0 20px #ffcc00;
-            display: none;
-        }
-
-        .neon-flip-label {
-            color: #ff0000;
-            text-shadow: 0 0 20px #ff0000, 0 0 30px #ff0000;
-        }
-
-        .flash {
-            animation: flash 1s infinite;
-        }
-
-        @keyframes flash {
-            0% { opacity: 1; }
-            50% { opacity: 0.5; }
-            100% { opacity: 1; }
-        }
-
-        /* Degen Mode Toggle Switch */
-        .switch {
+            padding: 20px;
+            text-align: center;
+            margin-bottom: 20px;
             position: relative;
-            display: inline-block;
-            width: 60px;
-            height: 34px;
-            margin-right: 10px;
-            vertical-align: middle;
         }
 
-        .switch input {
-            opacity: 0;
-            width: 0;
-            height: 0;
+        .banner-ad img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 10px;
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.5);
         }
 
-        .slider.round {
-            border-radius: 34px;
-            background-color: #ccc;
-            transition: 0.4s;
-            box-shadow: 0 0 10px #ffcc00;
-        }
-
-        .slider.round:before {
-            border-radius: 50%;
+        .banner-ad .close-btn {
             position: absolute;
-            content: "";
-            height: 26px;
-            width: 26px;
-            left: 4px;
-            bottom: 4px;
-            background-color: white;
-            transition: 0.4s;
+            top: 5px;
+            right: 10px;
+            background: transparent;
+            border: none;
+            color: #d1d1d1;
+            font-size: 20px;
+            cursor: pointer;
         }
 
-        input:checked + .slider {
-            background-color: #00ff00;
-            box-shadow: 0 0 10px #00ff00;
+        /* Sticky footer ad */
+        .sticky-footer-ad {
+            position: fixed;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100%;
+            max-width: 98%;
+            background-color: #252537;
+            text-align: center;
+            padding: 20px 0;
+            z-index: 1000;
+            box-shadow: 0px -3px 10px rgba(0, 0, 0, 0.5);
+            border-radius: 10px;
         }
 
-        input:not(:checked) + .slider {
-            background-color: #ff0000;
-            box-shadow: 0 0 10px #ff0000;
+        .sticky-footer-ad img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 10px;
         }
 
-        input:checked + .slider:before {
-            transform: translateX(26px);
+        .sticky-footer-ad a {
+            color: #007bff;
+            text-decoration: none;
+            display: inline-block;
         }
 
-        /* Rounded switch */
-        .slider.round {
-            border-radius: 34px;
+        .sticky-footer-ad a:hover {
+            text-decoration: underline;
         }
 
-        .slider.round:before {
-            border-radius: 50%;
+        /* Close button styling */
+        .sticky-footer-ad .close-btn {
+            position: absolute;
+            top: 5px;
+            right: 10px;
+            background: transparent;
+            border: none;
+            color: #d1d1d1;
+            font-size: 20px;
+            cursor: pointer;
         }
 
-        .degen-mode-label {
-            font-size: 1.2em;
-            color: #ffcc00;
-            text-shadow: 0 0 20px #ffcc00;
-            vertical-align: middle;
+        /* Custom cursor */
+        body, a, button {
+            cursor: default;
+        }
+
+        /* Parallax effect on background */
+        .parallax {
+            background-image: url('https://example.com/background.jpg'); /* Example background image */
+            background-attachment: fixed;
+            background-size: cover;
+            background-position: center;
+        }
+
+        /* Icons */
+        .icon {
+            margin-right: 8px;
+        }
+
+        /* Back to Top Button */
+        #back-to-top {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background-color: #007bff;
+            color: #ffffff;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: transform 0.3s;
+            z-index: 1000;
+        }
+
+        #back-to-top:hover {
+            transform: translateY(-3px);
+        }
+
+        @media (max-width: 768px) {
+            .curved-background {
+                clip-path: none;
+                border-radius: 0;
+                padding-top: 70px;
+            }
+
+            /* Ensure content stays within bounds */
+            .container-style, .banner-ad, .sticky-footer-ad {
+                padding: 20px;
+                margin: 0 auto 20px;
+                width: 100%;
+                max-width: 98%;
+                overflow-x: hidden;
+                box-sizing: border-box;
+            }
+
+            /* Ensure buttons do not take up too much space */
+            .btn-claim, .btn-donate, .btn-metamask {
+                width: 100%;
+                max-width: none;
+                margin-bottom: 15px;
+            }
+
+            .sticky-footer-ad {
+                position: fixed;
+                bottom: 0;
+                left: 50%;
+                transform: translateX(-50%);
+                z-index: 1000;
+                border-radius: 10px;
+            }
         }
     </style>
-    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.4.0/dist/confetti.browser.min.js"></script>
 </head>
-<body>
-    <div class="animated-bg"></div>
-    <div class="floating-emoji" style="top: 10%; left: 5%;">🎉</div>
-    <div class="floating-emoji" style="top: 20%; right: 10%;">💰</div>
-    <div class="floating-emoji" style="bottom: 15%; left: 15%;">✨</div>
-    <div class="floating-emoji" style="bottom: 10%; right: 5%;">🔥</div>
-
-    <div class="container">
-        <div class="jackpot-container">
-            <div class="jackpot-title">
-                Current Jackpot
-                <span class="tooltip">
-                    <span class="tooltip-icon">ℹ️</span>
-                    <span class="tooltiptext">When you win the jackpot, 50% of the jackpot balance is sent to you instantly.</span>
-                </span>
+<body class="parallax">
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-custom fixed-top">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="#">
+                <img src="https://pbs.twimg.com/profile_images/1823016387289436160/rvO34zc5_400x400.jpg" alt="Logo">
+                OverFaucet
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="https://twitter.com/OverFaucet" target="_blank">Twitter</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link disabled" href="#" onclick="comingSoon()">Stake</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link disabled" href="#" onclick="comingSoon()">Launchpad</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link disabled" href="#" onclick="comingSoon()">Partners</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#" onclick="contactUs()">Contact Us</a>
+                    </li>
+                </ul>
             </div>
-            <div id="jackpotAmount" class="jackpot-amount">Loading...</div>
         </div>
+    </nav>
 
-        <h1 id="logo">OVERFLIP</h1>
-        <div class="center-text">Provably fair game, built on Over Protocol<br>FLIP & WIN - 50% to Double Up, 50% chance to Lose your Flip
-            <span class="tooltip">
-                <span class="tooltip-icon">ℹ️</span>
-                <span class="tooltiptext">The outcome is based on a random number generated by a smart contract. Each flip is independent, and the odds are always 50/50.</span>
-            </span>
-        </div>
-        
-        <div class="section">
-            <button id="connectButton">Connect to 🦊 MetaMask</button>
-            <p id="walletAddress"></p>
-            <p id="userBalance"></p>
-            <br>
-            <p id="totalWinsLosses"></p>
-        </div>
+    <!-- Banner Ad Placeholder -->
+    <div class="banner-ad container-style" id="top-banner-ad">
+        <button class="close-btn" onclick="closeBannerAd()">×</button>
+        <p>Advertise <a href="https://x.com/OverFaucet">Here</a></p>
+        <!-- Replace with actual ad or image -->
+        <a href="https://overflip.fun"><img src="https://s12.gifyu.com/images/SDgv4.gif" alt="Banner Ad"></a><br><br>
+        <a href="https://overstake.io"><img src="https://s10.gifyu.com/images/SDlah.gif" alt="Banner Ad"></a><br><br>
+        <a href="https://overfaucet.lol"><img src="https://s12.gifyu.com/images/SDQIa.gif" alt="Banner Ad"></a><br><br>
+    </div>
 
-        <div class="section">
-            <div class="degen-mode-container">
-                <label class="switch">
-                    <input type="checkbox" id="degenModeToggle">
-                    <span class="slider round"></span>
-                </label>
-                <span class="degen-mode-label">Activate Degen Mode</span>
+    <!-- Curved Background Section -->
+    <div class="curved-background">
+        <div class="container theme-showcase" role="main">
+            <div class="jumbotron text-center container-style">
+                <h1>OverFaucet.lol</h1>
+                <i>A Free Community-Run Faucet</i><br><br>
+            
+                <p>Currently you can claim testnet $OVER from this faucet every 30 minutes.<br> <b>Make sure your wallet is connected to the OVER testnet otherwise you will lose gas.</b><br>You can request 10 Testnet $OVER every 30 minutes.</p> <br> This is a community-run service, so please donate any leftover test OVER for others users to use<br>
+                <h2 id="balance">Available Funds: (loading ...)</h2>
+                <h2 id="points">Earned OVERFLIP Points: (loading ...)</h2>
+                <br>
+                <h3 id="tx_result" class="text-info"></h3>
+                <br>
+                <br>
+                <button class="btn-claim" role="button" onclick="requestEther()">Claim OVER</button>
+                <button class="btn-donate" role="button" onclick="donateEther()">Donate OVER</button>
             </div>
-            <br>
-            <img id="coin" class="slow-spin" src="https://s2.coinmarketcap.com/static/img/coins/200x200/29407.png" alt="Coin">
-            <br>
-            <input type="range" min="1" max="10" value="1" class="slider" id="betAmount">
-            <br>
-            <p id="flipLabel" class="flip-label"></p>
-            <br>
-            <button id="flipButton" disabled>Flip Coin</button>
-        </div>
 
-        <div id="progressBarContainer">
-            <div id="progressBar"></div>
-        </div>
+            <div class="page-header container-style">
+                <h3 style="text-align: center;">Chain Details</h3>
+            </div>
+            <div class="text-center container-style">
+                <b>Network Name:</b> <span>OverProtocol Dolphin</span><br>
+                <b>RPC URL:</b> <span>http://159.223.78.74:22000</span><br>
+                <b>Chain ID:</b> <span>541764</span><br>
+                <b>Currency Symbol:</b> <span>OVER</span><br><br>
+                <button class="btn-metamask" onclick="addNetwork()"><b>Add to 🦊 MetaMask</b></button>
+            </div>
 
-        <div class="section">
-            <p id="status" class="message"></p>
-        </div>
-
-        <div class="section">
-            <button class="collapse-button" onclick="toggleHistory()">Toggle Game History</button>
-            <div id="historyContent" class="collapse-content">
-                <h2>Betting History</h2>
-                <table id="historyTable">
-                    <thead>
-                        <tr>
-                            <th>Block Number</th>
-                            <th>Bet Amount ($OVER)</th>
-                            <th>Result</th>
-                            <th>Won/Lost Amount ($OVER)</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <!-- Betting history will be dynamically inserted here -->
-                    </tbody>
-                </table>
-                <button onclick="clearHistory()">Clear Betting History</button>
+            <div class="page-header container-style">
+                <h3 style="text-align: center;">Faucet Info</h3>
+            </div>
+            <div class="text-center container-style footer-spacing">
+                <b>Contract Address:</b> <a href="https://dolphin.view.over.network/address/0xB1001A3714C3450F41C243393603Fe4F63b92ba1" target="_blank">0xB1001A3714C3450F41C243393603Fe4F63b92ba1</a><br><br>
+                <i>Don't be greedy❤️❤️ Testnet OVER tokens have no value ❤️</i>
             </div>
         </div>
     </div>
 
-    <script src="https://cdn.jsdelivr.net/gh/ethereum/web3.js/dist/web3.min.js"></script>
-    <script>
-        const contractAddress = "0x6eA8c7fA80734C806734eFaDCe2664871A2127EC"; // Replace with your contract address
-        const jackpotContractAddress = "0xcbee6aF6ab310025888D340ab3Fd3F7fe808E000"; // Replace with your jackpot contract address
-        let contractABI;
-        let web3;
-        let contract;
-        let userAccount;
-        let betHistory = JSON.parse(localStorage.getItem('betHistory')) || [];
+    <!-- Sticky Footer Ad -->
+    <div class="sticky-footer-ad container-style">
+        <button class="close-btn" onclick="closeFooterAd()">×</button>
+        <a href="https://overflip.fun">
+            <img src="https://s12.gifyu.com/images/SDgv4.gif" alt="Sticky Footer Ad">
+        </a><br><p>Advertise <a href="https://x.com/OverFaucet">Here</a></p>
+    </div>
 
-        const OVER_DOLPHIN_NETWORK_PARAMS = {
-            chainId: '0x84554c', // Chain ID 541764 in hexadecimal
-            chainName: 'Over Dolphin',
-            rpcUrls: ['https://wallet-dolphin.rpc.over.network/'],
-            nativeCurrency: {
-                name: 'OVER',
-                symbol: 'OVER',
-                decimals: 18
-            },
-            blockExplorerUrls: ['']
+    <!-- Footer -->
+    <footer>
+        Made by the <a href="https://x.com/OverFaucet" target="_blank">OverFaucet Team</a> with Love ❤️❤️
+        <br><br>
+    </footer>
+
+    <!-- Back to Top Button -->
+    <button id="back-to-top" onclick="scrollToTop()">↑</button>
+
+    <!-- JavaScript Libraries -->
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/web3@1.3.1/dist/web3.min.js" crossorigin="anonymous"></script>
+
+    <!-- Your script here -->
+    <script>
+        const faucet_contract_address = '0xB1001A3714C3450F41C243393603Fe4F63b92ba1';
+        const coinflip_contract_address = '0x0f8250E1B8D0e1db1f8CC8d1Aece341273964a1F'; // CoinFlip contract address
+        const faucet_contract_abi = [
+            // Faucet contract ABI
+        ];
+        const coinflip_contract_abi = [
+            // CoinFlip contract ABI
+            {
+                "constant": true,
+                "inputs": [
+                    {
+                        "name": "player",
+                        "type": "address"
+                    }
+                ],
+                "name": "getPlayerPoints",
+                "outputs": [
+                    {
+                        "name": "",
+                        "type": "uint256"
+                    }
+                ],
+                "payable": false,
+                "stateMutability": "view",
+                "type": "function"
+            }
+        ];
+
+        const chainId = '0x84444';  // 541764 in hexadecimal
+        const rpcURL = 'http://159.223.78.74:22000';
+        const networkName = 'Over New Dolphin';
+        const currencyName = 'OVER';
+        const currencySymbol = 'OVER';
+        const explorerURL = 'https://dolphin.view.over.network/tx/';
+
+        const addNetwork = async () => {
+            if (!window.ethereum) {
+                console.error('Metamask not detected');
+                return;
+            }
+            await window.ethereum.request({
+                method: 'wallet_addEthereumChain',
+                params: [
+                    {
+                        chainId: chainId,
+                        chainName: networkName,
+                        rpcUrls: [rpcURL],
+                        blockExplorerUrls: [explorerURL],
+                        nativeCurrency: {
+                            name: currencyName,
+                            symbol: currencySymbol, // 2-6 characters long
+                            decimals: 18,
+                        },
+                    },
+                ],
+            });
+            // refresh
+            window.location.reload();
         };
 
-        async function switchToOverDolphinNetwork() {
-            try {
-                await ethereum.request({
-                    method: 'wallet_switchEthereumChain',
-                    params: [{ chainId: OVER_DOLPHIN_NETWORK_PARAMS.chainId }]
-                });
-            } catch (switchError) {
-                if (switchError.code === 4902) {
-                    try {
-                        await ethereum.request({
-                            method: 'wallet_addEthereumChain',
-                            params: [OVER_DOLPHIN_NETWORK_PARAMS]
-                        });
-                    } catch (addError) {
-                        console.error('Failed to add Over Dolphin network:', addError);
-                    }
-                } else {
-                    console.error('Failed to switch to Over Dolphin network:', switchError);
-                }
-            }
-        }
-
-        async function checkNetworkAndConnect() {
-            if (typeof window.ethereum !== 'undefined') {
-                try {
-                    const networkId = await web3.eth.getChainId();
-                    if (networkId !== 541764) { // 541764 is the Over Dolphin network ID
-                        await switchToOverDolphinNetwork();
-                    }
-
-                    const accounts = await ethereum.request({ method: 'eth_requestAccounts' });
-                    userAccount = accounts[0];
-                    document.getElementById('walletAddress').innerText = userAccount;
-                    document.getElementById('flipButton').disabled = false;
-                    document.getElementById('connectButton').innerText = "Disconnect";
-
-                    // Fetch and display the user's balance
-                    const balance = await web3.eth.getBalance(userAccount);
-                    const balanceInEther = parseFloat(web3.utils.fromWei(balance, "ether")).toFixed(4);
-                    document.getElementById('userBalance').innerText = `Balance: ${balanceInEther} OVER`;
-
-                    // Restore the betting history
-                    restoreBetHistory();
-
-                    // Fetch and display the jackpot balance
-                    await updateJackpotBalance();
-
-                } catch (error) {
-                    console.error("User rejected the request or failed to switch network:", error);
-                    alert("Failed to connect to the Over Dolphin network.");
-                }
+        window.addEventListener('load', function () {
+            if (typeof web3 !== 'undefined') {
+                web3 = new Web3(window.ethereum);
             } else {
-                alert("MetaMask is not installed. Please install it to use this DApp!");
+                web3 = new Web3(new Web3.providers.HttpProvider('http://localhost:8545'));
             }
-        }
 
-        async function updateJackpotBalance() {
-            try {
-                const jackpotBalance = await web3.eth.getBalance(jackpotContractAddress);
-                const jackpotInEther = parseFloat(web3.utils.fromWei(jackpotBalance, "ether")).toFixed(4);
-                document.getElementById('jackpotAmount').innerText = `${jackpotInEther} OVER`;
-            } catch (error) {
-                console.error("Failed to fetch jackpot balance:", error);
-                document.getElementById('jackpotAmount').innerText = "Error loading jackpot";
-            }
-        }
-
-        document.getElementById('connectButton').addEventListener('click', async () => {
-            if (document.getElementById('connectButton').innerText === "Disconnect") {
-                // Disconnect logic here
-                document.getElementById('walletAddress').innerText = "";
-                document.getElementById('userBalance').innerText = "";
-                document.getElementById('connectButton').innerText = "Connect to 🦊 MetaMask";
-                document.getElementById('flipButton').disabled = true;
-                return;
-            }
-            
-            web3 = new Web3(Web3.givenProvider || "http://localhost:8545");
-
-            try {
-                const response = await fetch('coinflip.json');
-                contractABI = await response.json();
-                contract = new web3.eth.Contract(contractABI, contractAddress);
-
-                // Check if user is on the Over Dolphin network
-                await checkNetworkAndConnect();
-            } catch (error) {
-                console.error("Error loading the ABI or initializing the contract:", error);
-                document.getElementById('status').innerText = "Failed to load contract.";
-            }
+            new Promise((resolve, reject) => {
+                window.ethereum.enable();
+                resolve();
+            }).then(() => {
+                getBalance();
+                getPoints(); // Fetch user points after connecting wallet
+            });
         });
 
-        document.getElementById('flipButton').addEventListener('click', async () => {
-            if (!contract) {
-                console.error("Contract is not initialized.");
-                document.getElementById('status').innerText = "Contract not initialized.";
-                return;
-            }
-
-            const betAmountInput = document.getElementById('betAmount').value;
-            if (betAmountInput > 100) {
-                alert("The maximum bet amount is 100 $OVER.");
-                return;
-            }
-            const betAmount = web3.utils.toWei(betAmountInput, "ether");
-
-            document.getElementById('status').innerText = "Flipping the coin...";
-            document.getElementById('progressBarContainer').style.display = 'block';
-
-            try {
-                const receipt = await contract.methods.flip().send({
-                    from: userAccount,
-                    value: betAmount,
-                });
-
-                document.getElementById('progressBarContainer').style.display = 'none';
-
-                // Rotate the logo after the bet
-                document.getElementById('logo').classList.add('rotate');
-                setTimeout(() => {
-                    document.getElementById('logo').classList.remove('rotate');
-                }, 1000);
-
-                // Coin flip animation
-                const coinElement = document.getElementById('coin');
-                coinElement.classList.add('flip');
-                document.querySelector('.container').classList.add('crazy-effect');
-
-                setTimeout(() => {
-                    coinElement.classList.remove('flip');
-                    document.querySelector('.container').classList.remove('crazy-effect');
-                }, 1500);
-
-                const flipEvent = receipt.events.FlipResult;
-                if (!flipEvent || !flipEvent.returnValues) {
-                    throw new Error("Unexpected result from the contract.");
-                }
-
-                const win = flipEvent.returnValues.win;
-                const betAmountEther = parseFloat(web3.utils.fromWei(betAmount, "ether")).toFixed(4);
-
-                let resultText;
-                let wonLostAmount;
-
-                if (win) {
-                    const wonAmount = parseFloat(betAmountEther * 1.9).toFixed(4);
-                    resultText = "Won";
-                    wonLostAmount = wonAmount;
-                    document.getElementById('status').innerText = `You won! Amount: ${wonAmount} $OVER`;
-                    document.getElementById('status').classList.remove('lose');
-                    document.getElementById('status').classList.add('win');
-
-                    // Trigger the confetti effect
-                    confetti({
-                        particleCount: 200,
-                        spread: 70,
-                        origin: { y: 0.6 }
-                    });
-
-                    // Flash green background
-                    flashBackground('green');
-
-                } else {
-                    resultText = "Lost";
-                    wonLostAmount = betAmountEther;
-                    document.getElementById('status').innerText = `You lost! Amount: ${betAmountEther} $OVER`;
-                    document.getElementById('status').classList.remove('win');
-                    document.getElementById('status').classList.add('lose');
-                    triggerSadFaceEmojis();
-
-                    // Flash red background
-                    flashBackground('red');
-                }
-
-                // Add the result to the history table and save to localStorage
-                addBetToHistory(receipt.blockNumber, betAmountEther, resultText, wonLostAmount, receipt.transactionHash);
-
-                // Update balance and total wins/losses after the transaction
-                const newBalance = await web3.eth.getBalance(userAccount);
-                const newBalanceInEther = parseFloat(web3.utils.fromWei(newBalance, "ether")).toFixed(4);
-                document.getElementById('userBalance').innerText = `Balance: ${newBalanceInEther} OVER`;
-
-                updateTotalWinsLosses();
-
-                // Check if the jackpot was won
-                if (flipEvent.returnValues.jackpotWon) {
-                    setTimeout(() => {
-                        alert(`Congratulations! You've won the jackpot of ${flipEvent.returnValues.jackpotAmount} $OVER!`);
-                        // Double the confetti effect for a longer period
-                        for (let i = 0; i < 2; i++) {
-                            setTimeout(() => {
-                                confetti({
-                                    particleCount: 200,
-                                    spread: 100,
-                                    origin: { y: 0.6 }
-                                });
-                            }, i * 1000);
+        function requestEther() {
+            new Promise((resolve, reject) => {
+                getAccounts(function (result) {
+                    const Faucet = new web3.eth.Contract(faucet_contract_abi, faucet_contract_address);
+                    Faucet.methods.withdraw().send({ from: result[0] }, function (error, result) {
+                        if (!error) {
+                            document.getElementById("tx_result").innerHTML = "TX created successfully with the hash: " + result;
+                        } else {
+                            document.getElementById("tx_result").innerHTML = error;
                         }
-                    }, 500); // Delayed for effect
-                }
+                    });
+                });
+                resolve();
+            });
+        }
 
-                // Update jackpot balance after potential win
-                await updateJackpotBalance();
-
-            } catch (error) {
-                console.error("Error occurred during transaction:", error);
-                document.getElementById('status').innerText = "Error occurred: " + error.message;
-                document.getElementById('status').classList.add('lose');
-                document.getElementById('progressBarContainer').style.display = 'none';
-            }
-        });
-
-        document.getElementById('betAmount').addEventListener('input', function () {
-            const betValue = this.value;
-            document.getElementById('totalWinsLosses').style.display = 'none';
-            const flipLabel = document.getElementById('flipLabel');
-            flipLabel.innerText = `FLIP ${betValue} OVER`;
-            flipLabel.style.display = 'block';
-            flipLabel.classList.add('flash');
-
-            if (document.getElementById('degenModeToggle').checked) {
-                this.classList.add('neon-red');
-                flipLabel.classList.add('neon-flip-label');
+        function donateEther() {
+            var amount = prompt("How much OVER do you want to donate?", "0.5");
+            if (isNaN(parseInt(amount))) {
+                document.getElementById("tx_result").innerHTML = "Error: Please input a valid number";
             } else {
-                this.classList.remove('neon-red');
-                flipLabel.classList.remove('neon-flip-label');
+                new Promise((resolve) => {
+                    getAccounts(function (result) {
+                        web3.eth.sendTransaction(
+                            {
+                                from: result[0],
+                                to: faucet_contract_address,
+                                value: web3.utils.toWei(amount, 'ether')
+                            }, function (err, transactionHash) {
+                                if (!err)
+                                    document.getElementById("tx_result").innerHTML = "TX created successfully with the hash: " + transactionHash;
+                            });
+                    });
+                });
             }
-
-            // Make the slider more exciting as the bet increases
-            const excitementLevel = betValue / 10;
-            this.style.backgroundColor = `rgba(255, 204, 0, ${excitementLevel})`;
-            this.style.transform = `scale(${1 + excitementLevel * 0.1})`;
-        });
-
-        function flashBackground(color) {
-            document.body.style.transition = 'background-color 0.5s ease';
-            document.body.style.backgroundColor = color;
-            setTimeout(() => {
-                document.body.style.transition = 'background-color 1s ease';
-                document.body.style.backgroundColor = ''; // Reset to original gradient
-            }, 1000);
         }
 
-        function addBetToHistory(blockNumber, betAmount, result, wonLostAmount, transactionHash) {
-            betHistory.unshift({ blockNumber, betAmount, result, wonLostAmount, transactionHash });
-            localStorage.setItem('betHistory', JSON.stringify(betHistory));
-            updateBetHistoryTable();
-        }
-
-        function updateBetHistoryTable() {
-            const tableBody = document.getElementById('historyTable').getElementsByTagName('tbody')[0];
-            tableBody.innerHTML = "";
-            betHistory.forEach((bet) => {
-                const newRow = tableBody.insertRow();
-
-                const blockCell = newRow.insertCell(0);
-                const betCell = newRow.insertCell(1);
-                const resultCell = newRow.insertCell(2);
-                const amountCell = newRow.insertCell(3);
-
-                blockCell.innerHTML = `<a href="https://dolphin.view.over.network/tx/${bet.transactionHash}" target="_blank">${bet.blockNumber}</a>`;
-                betCell.innerText = `${bet.betAmount} $OVER`;
-                resultCell.innerText = bet.result;
-                amountCell.innerText = `${bet.wonLostAmount} $OVER`;
-                if (bet.result === "Won") {
-                    amountCell.classList.add('win-amount');
+        function getAccounts(callback) {
+            web3.eth.getAccounts((error, result) => {
+                if (error) {
+                    console.log(error);
                 } else {
-                    amountCell.classList.add('lose-amount');
+                    callback(result);
                 }
             });
         }
 
-        function restoreBetHistory() {
-            updateBetHistoryTable();
-            updateTotalWinsLosses();
+        function getBalance() {
+            try {
+                web3.eth.getBalance(faucet_contract_address, function (error, wei) {
+                    if (!error) {
+                        var balance = web3.utils.fromWei(wei, 'ether');
+                        document.getElementById("balance").innerHTML = "Available Funds: " + balance + " OVER";
+                    }
+                });
+            } catch (err) {
+                document.getElementById("balance").innerHTML = err;
+            }
         }
 
-        function updateTotalWinsLosses() {
-            let totalWins = 0;
-            let totalLosses = 0;
-
-            betHistory.forEach(bet => {
-                if (bet.result === "Won") {
-                    totalWins += parseFloat(bet.wonLostAmount);
-                } else {
-                    totalLosses += parseFloat(bet.betAmount);
-                }
+        function getPoints() {
+            getAccounts(function (accounts) {
+                const CoinFlip = new web3.eth.Contract(coinflip_contract_abi, coinflip_contract_address);
+                CoinFlip.methods.getPlayerPoints(accounts[0]).call({ from: accounts[0] }, function (error, points) {
+                    if (!error) {
+                        document.getElementById("points").innerHTML = "Earned OVERFLIP Points: " + points;
+                    } else {
+                        document.getElementById("points").innerHTML = "Earned OVERFLIP Points: (error loading points)";
+                    }
+                });
             });
-
-            totalWins = totalWins.toFixed(4);
-            totalLosses = totalLosses.toFixed(4);
-            const netProfit = (totalWins - totalLosses).toFixed(4);
-
-            document.getElementById('totalWinsLosses').innerHTML = `
-                <div style="color: #28a745;">Total Wins: ${totalWins} OVER</div>
-                <div class="loss" style="color: #dc3545;">Total Losses: ${totalLosses} OVER</div>
-                <br>
-                <div class="profit" style="color: ${netProfit >= 0 ? '#28a745' : '#dc3545'};">Net Profit: ${netProfit} OVER</div>
-            `;
         }
 
-        function triggerSadFaceEmojis() {
-            for (let i = 0; i < 10; i++) {
-                const emoji = document.createElement('div');
-                emoji.className = 'floating-emoji';
-                emoji.innerText = '💀';
-                emoji.style.top = `${Math.random() * 100}%`;
-                emoji.style.left = `${Math.random() * 100}%`;
-                emoji.style.animationDuration = `${Math.random() * 2 + 3}s`;
-                document.querySelector('.container').appendChild(emoji);
-
-                setTimeout(() => {
-                    emoji.remove();
-                }, 5000);
-            }
+        function closeFooterAd() {
+            document.querySelector('.sticky-footer-ad').style.display = 'none';
         }
 
-        function toggleHistory() {
-            const content = document.getElementById("historyContent");
-            if (content.style.display === "block") {
-                content.style.display = "none";
-            } else {
-                content.style.display = "block";
-            }
+        function closeBannerAd() {
+            document.getElementById('top-banner-ad').style.display = 'none';
         }
 
-        function clearHistory() {
-            if (confirm("Are you sure you want to clear your betting history?")) {
-                betHistory = [];
-                localStorage.removeItem('betHistory');
-                updateBetHistoryTable();
-                updateTotalWinsLosses();
-            }
+        function comingSoon() {
+            alert("The Stake feature is coming soon!");
         }
 
-        document.getElementById('degenModeToggle').addEventListener('change', function () {
-            const isChecked = this.checked;
-            const betAmountSlider = document.getElementById('betAmount');
-            const flipLabel = document.getElementById('flipLabel');
-            if (isChecked) {
-                const confirmation = confirm("WARNING DEGEN MODE IS FOR TRUE DEGENS ONLY, YOU CAN LOSE ALL YOUR OVER. AND YOU PROBABLY WILL BECAUSE GAMBLING IS BAD. ARE YOU SURE YOU WANT TO CONTINUE");
-                if (confirmation) {
-                    betAmountSlider.max = 100;
-                    betAmountSlider.min = 10;
-                    betAmountSlider.step = 10;
-                    betAmountSlider.value = 10; // Set to the minimum value
-                    betAmountSlider.classList.add('neon-red');
-                    flipLabel.classList.add('neon-flip-label');
-                } else {
-                    this.checked = false; // If user cancels, uncheck the toggle
-                }
-            } else {
-                betAmountSlider.max = 10;
-                betAmountSlider.min = 1;
-                betAmountSlider.step = 1;
-                betAmountSlider.value = 1; // Reset to default value
-                betAmountSlider.classList.remove('neon-red');
-                flipLabel.classList.remove('neon-flip-label');
-            }
-        });
+        function contactUs() {
+            window.location.href = "https://twitter.com/overfaucet";
+        }
+
+        function scrollToTop() {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
     </script>
 </body>
 </html>
